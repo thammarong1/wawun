@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RESET - Cute Edition</title>
+    <!-- ใช้ฟอนต์ลายมือสุดน่ารัก -->
+    <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* โทนสีพาสเทลน่ารัก */
+            --bg-color: #FFE5EC; /* ชมพูอ่อนสุด */
+            --app-bg: #FFFFFF;
+            --primary: #FF9CEE; /* ชมพูพาสเทล */
+            --primary-light: #FFF0F5;
+            --secondary: #A2E1DB; /* ฟ้าพาสเทล */
+            --accent: #FFB7B2; /* ส้มพีช */
+            --text-main: #5C4A4D; /* น้ำตาลนุ่มๆ แทนสีดำ */
+            --text-muted: #9E898B;
+            --border: #FBE5E9;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Mali', cursive; }
+
+        body {
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-main);
+            background-image: radial-gradient(#FF9CEE 1px, transparent 1px);
+            background-size: 20px 20px;
+            background-color: #FFF5F7;
+        }
+
+        /* กรอบมือถือ */
+        .device-frame {
+            width: 375px;
+            height: 812px;
+            background-color: var(--app-bg);
+            border-radius: 45px;
+            box-shadow: 0 20px 50px rgba(255, 156, 238, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: 10px solid #FFFFFF;
+            outline: 4px solid var(--border);
+        }
+
+        /* แถบไข่ปลาด้านบน */
+        .progress-container {
+            padding: 40px 20px 10px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            background: var(--app-bg);
+            z-index: 10;
+            position: relative;
+        }
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--border);
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .step-dot.active {
+            background-color: var(--primary);
+            width: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(255, 156, 238, 0.4);
+        }
+
+        /* หน้าจอต่างๆ */
+        .screen {
+            position: absolute;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 70px);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.95);
+            transition: all 0.4s ease-out;
+        }
+        .screen.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: scale(1);
+        }
+
+        /* ข้อความ */
+        h1 { font-size: 26px; color: var(--primary); margin-bottom: 10px; font-weight: 700; text-align: center; }
+        p.subtitle { font-size: 15px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5; text-align: center; }
+        .hero-emoji { font-size: 60px; text-align: center; margin-bottom: 15px; animation: bounce 2s infinite; }
+
+        /* ปุ่มกดแบบนุ่มฟู */
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+            margin-top: auto;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 15px rgba(255, 156, 238, 0.4);
+        }
+        .btn:active { transform: scale(0.95); box-shadow: 0 4px 8px rgba(255, 156, 238, 0.3); }
+        .btn:disabled { background-color: var(--border); box-shadow: none; cursor: not-allowed; color: var(--text-muted); }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 3px solid var(--primary);
+            margin-top: 5px;
+            box-shadow: none;
+        }
+
+        /* Slider */
+        .slider-container { margin: 20px 0 40px; text-align: center; }
+        input[type=range] {
+            width: 100%;
+            accent-color: var(--primary);
+            height: 8px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        .stress-label { font-size: 45px; font-weight: 700; color: var(--primary); display: block; text-shadow: 2px 2px 0px var(--border); }
+
+        /* กล่องข้อความ */
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input[type="text"] {
+            flex: 1;
+            padding: 15px;
+            border: 3px solid var(--border);
+            border-radius: 20px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+            background: #FAFAFA;
+        }
+        input[type="text"]:focus { border-color: var(--secondary); background: white; box-shadow: 0 4px 10px rgba(162, 225, 219, 0.3); }
+        .btn-add {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 0 20px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(162, 225, 219, 0.4);
+        }
+
+        /* รายการงาน */
+        .task-list { flex: 1; overflow-y: auto; margin-bottom: 20px; padding-right: 5px; }
+        .task-item {
+            background: var(--primary-light);
+            padding: 15px 20px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            border: 2px dashed var(--primary);
+            animation: fadeIn 0.3s ease-in;
+            display: flex;
+            align-items: center;
+        }
+        .task-item::before { content: '🌸'; margin-right: 10px; }
+
+        /* เลือกหมวดหมู่ */
+        .organize-card {
+            background: white;
+            border: 3px solid var(--border);
+            padding: 18px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+        }
+        .organize-title { font-weight: 600; margin-bottom: 15px; font-size: 15px; text-align: center;}
+        .tag-group { display: flex; gap: 8px; }
+        .tag-btn {
+            flex: 1;
+            padding: 10px 0;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tag-btn.active-tomorrow { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 8px rgba(255, 156, 238, 0.3); }
+        .tag-btn.active-later { background: var(--secondary); color: white; border-color: var(--secondary); box-shadow: 0 4px 8px rgba(162, 225, 219, 0.3); }
+        .tag-btn.active-drop { background: var(--accent); color: white; border-color: var(--accent); box-shadow: 0 4px 8px rgba(255, 183, 178, 0.3); }
+
+        /* กิจกรรมพักผ่อน */
+        .recharge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;}
+        .recharge-card {
+            border: 3px solid var(--border);
+            border-radius: 25px;
+            padding: 20px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+        }
+        .recharge-card:hover { transform: translateY(-5px); }
+        .recharge-card.active {
+            border-color: var(--secondary);
+            background-color: #F0FBFA;
+            box-shadow: 0 8px 15px rgba(162, 225, 219, 0.3);
+        }
+        .recharge-icon { font-size: 35px; margin-bottom: 10px; }
+        .recharge-label { font-size: 14px; font-weight: 600; }
+
+        /* Animation เด้งดึ๋ง */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="device-frame">
+        <!-- Progress -->
+        <div class="progress-container" id="progress">
+            <div class="step-dot active"></div>
+            <div class="step-dot"></div>
+            <div class="step-dot"></div>
+            <div class="step-dot"></div>
+            <div class="step-dot"></div>
+        </div>
+
+        <!-- หน้า 1 -->
+        <div class="screen active" id="step-1">
+            <div class="hero-emoji">🧸✨</div>
+            <h1>เลิกงานแล้วนะคนเก่ง!</h1>
+            <p class="subtitle">ก่อนจะไปพักผ่อน วันนี้เหนื่อยระดับไหนจ๊ะ? <br>(1-10)</p>
+            
+            <div class="slider-container">
+                <input type="range" id="preStress" min="1" max="10" value="5" oninput="document.getElementById('preStressVal').innerText = this.value">
+                <span class="stress-label" id="preStressVal">5</span>
+            </div>
+
+            <button class="btn" onclick="nextStep(2)">เริ่มเคลียร์สมอง 🎀</button>
+        </div>
+
+        <!-- หน้า 2 -->
+        <div class="screen" id="step-2">
+            <div class="hero-emoji">☁️📝</div>
+            <h1>เทความกังวลทิ้งไป</h1>
+            <p class="subtitle">พิมพ์สิ่งที่ค้างคาใจออกมาเลยนะ <br>เดี๋ยวเค้าช่วยเก็บไว้ให้เอง!</p>
+
+            <div class="input-group">
+                <input type="text" id="taskInput" placeholder="พิมพ์ตรงนี้เลยงับ..." onkeypress="handleEnter(event)">
+                <button class="btn-add" onclick="addTask()">+</button>
+            </div>
+
+            <div class="task-list" id="brainDumpList"></div>
+
+            <button class="btn" id="btnNext2" onclick="goToOrganize()" disabled>ไปต่อกันเลย 🚀</button>
+        </div>
+
+        <!-- หน้า 3 -->
+        <div class="screen" id="step-3">
+            <div class="hero-emoji">🧺🌸</div>
+            <h1>จัดระเบียบกันเถอะ</h1>
+            <p class="subtitle">เรื่องพวกนี้ เอาไงดีน้า?</p>
+
+            <div class="task-list" id="organizeList"></div>
+
+            <button class="btn" id="btnNext3" onclick="nextStep(4)" disabled>จัดการเรียบร้อย 💖</button>
+        </div>
+
+        <!-- หน้า 4 -->
+        <div class="screen" id="step-4">
+            <div class="hero-emoji">🌷🎧</div>
+            <h1>เวลาพักผ่อนของเธอ</h1>
+            <p class="subtitle">เลือก 1 อย่างเพื่อฮีลใจก่อนปิดวันนะงับ</p>
+
+            <div class="recharge-grid">
+                <div class="recharge-card" onclick="selectRecharge(this)">
+                    <div class="recharge-icon">🎵</div>
+                    <div class="recharge-label">ฟังเพลงโปรด</div>
+                </div>
+                <div class="recharge-card" onclick="selectRecharge(this)">
+                    <div class="recharge-icon">🌬️</div>
+                    <div class="recharge-label">หายใจลึกๆ</div>
+                </div>
+                <div class="recharge-card" onclick="selectRecharge(this)">
+                    <div class="recharge-icon">🐈</div>
+                    <div class="recharge-label">เล่นกับสัตว์เลี้ยง</div>
+                </div>
+                <div class="recharge-card" onclick="selectRecharge(this)">
+                    <div class="recharge-icon">🧋</div>
+                    <div class="recharge-label">ดื่มน้ำชื่นใจ</div>
+                </div>
+            </div>
+
+            <button class="btn" id="btnNext4" onclick="nextStep(5)" disabled>เริ่มพักผ่อน 💤</button>
+        </div>
+
+        <!-- หน้า 5 -->
+        <div class="screen" id="step-5">
+            <div class="hero-emoji">💖🍰</div>
+            <h1>เก่งมากเลย!</h1>
+            <p class="subtitle">เคลียร์หัวโล่งแล้ว ตอนนี้รู้สึกดีขึ้นมั้ยเอ่ย? <br>(1-10)</p>
+
+            <div class="slider-container" style="margin-top:0;">
+                <input type="range" id="postStress" min="1" max="10" value="2" oninput="document.getElementById('postStressVal').innerText = this.value">
+                <span class="stress-label" id="postStressVal">2</span>
+            </div>
+
+            <div style="background: white; padding: 15px; border-radius: 20px; border: 2px dashed var(--secondary); margin-bottom: 20px;">
+                <p style="font-size: 14px; font-weight: 700; color: var(--secondary); margin-bottom: 5px;">📌 โน้ตไว้ทำพรุ่งนี้นะ:</p>
+                <ul id="tomorrowList" style="font-size: 14px; padding-left: 25px; line-height: 1.6;"></ul>
+            </div>
+
+            <button class="btn" onclick="finish()">บ๊ายบาย ไปพักแล้ว! 👋</button>
+            <button class="btn btn-outline" onclick="location.reload()">เริ่มใหม่อีกรอบ 🔄</button>
+        </div>
+
+    </div>
+
+    <script>
+        let tasks = [];
+        let taskDecisions = {};
+
+        function nextStep(stepNum) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`step-${stepNum}`).classList.add('active');
+            
+            const dots = document.querySelectorAll('.step-dot');
+            dots.forEach((dot, index) => {
+                if(index < stepNum) dot.classList.add('active');
+                else dot.classList.remove('active');
+            });
+        }
+
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const val = input.value.trim();
+            if (val) {
+                tasks.push(val);
+                input.value = '';
+                renderBrainDump();
+            }
+        }
+        function handleEnter(e) { if(e.key === 'Enter') addTask(); }
+
+        function renderBrainDump() {
+            const list = document.getElementById('brainDumpList');
+            list.innerHTML = '';
+            tasks.forEach((task) => {
+                list.innerHTML += `<div class="task-item"><span>${task}</span></div>`;
+            });
+            document.getElementById('btnNext2').disabled = tasks.length === 0;
+        }
+
+        function goToOrganize() {
+            const list = document.getElementById('organizeList');
+            list.innerHTML = '';
+            taskDecisions = {};
+            
+            tasks.forEach((task, index) => {
+                list.innerHTML += `
+                    <div class="organize-card">
+                        <div class="organize-title">✨ ${task} ✨</div>
+                        <div class="tag-group">
+                            <button class="tag-btn" onclick="setTag(${index}, 'tomorrow', this)">พรุ่งนี้ 🌤️</button>
+                            <button class="tag-btn" onclick="setTag(${index}, 'later', this)">วันหลัง 🐢</button>
+                            <button class="tag-btn" onclick="setTag(${index}, 'drop', this)">เททิ้ง 🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+            checkOrganizeDone();
+            nextStep(3);
+        }
+
+        function setTag(taskIndex, decision, btnElement) {
+            taskDecisions[taskIndex] = decision;
+            
+            const parent = btnElement.parentElement;
+            parent.querySelectorAll('.tag-btn').forEach(btn => {
+                btn.classList.remove('active-tomorrow', 'active-later', 'active-drop');
+            });
+
+            if(decision === 'tomorrow') btnElement.classList.add('active-tomorrow');
+            if(decision === 'later') btnElement.classList.add('active-later');
+            if(decision === 'drop') btnElement.classList.add('active-drop');
+
+            checkOrganizeDone();
+        }
+
+        function checkOrganizeDone() {
+            const totalDecisions = Object.keys(taskDecisions).length;
+            document.getElementById('btnNext3').disabled = totalDecisions !== tasks.length;
+        }
+
+        function selectRecharge(element) {
+            document.querySelectorAll('.recharge-card').forEach(c => c.classList.remove('active'));
+            element.classList.add('active');
+            document.getElementById('btnNext4').disabled = false;
+        }
+
+        document.getElementById('btnNext4').addEventListener('click', () => {
+            const tomorrowList = document.getElementById('tomorrowList');
+            tomorrowList.innerHTML = '';
+            let hasTomorrow = false;
+
+            tasks.forEach((task, index) => {
+                if(taskDecisions[index] === 'tomorrow') {
+                    tomorrowList.innerHTML += `<li>${task}</li>`;
+                    hasTomorrow = true;
+                }
+            });
+
+            if(!hasTomorrow) {
+                tomorrowList.innerHTML = '<li>ไม่มีงานค้างเลย เย้! 🎉</li>';
+            }
+        });
+
+        function finish() {
+            alert(`💖 ปิดแอปเรียบร้อย!\nขอให้มีเย็นที่สดใสนะงับ ✨`);
+        }
+    </script>
+</body>
+</html>
