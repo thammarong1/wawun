@@ -7,219 +7,136 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Muted Slate Blue - สื่อถึงความสงบ นิ่ง มีสติ ดึงโฟกัส */
+            /* โหมดปกติ (กลางวัน) */
             --primary: #4A6D7C; 
-            /* Muted Sage Green - สีที่พักสายตาที่สุด ลดความกังวล */
             --success: #5B8A72; 
-            /* Warm Earth / Ocher - ความอบอุ่น มั่นคง ปลอดภัย */
             --warning: #C49A6C; 
-            /* Soft Rose / Clay - ปล่อยวาง อ่อนโยน (แทนสีแดงแรงๆ ที่กระตุ้นความเครียด) */
             --danger:  #B56B6B; 
-            /* Deep Blue-Gray - ซอฟต์กว่าสีดำสนิท ทำให้อ่านแล้วไม่อึดอัด */
             --text-main: #2C3E50; 
             --text-muted: #7F8C8D;
             --glass-bg: rgba(255, 255, 255, 0.75);
             --glass-border: rgba(255, 255, 255, 0.6);
+            --bg-gradient: linear-gradient(135deg, #E3EADD 0%, #C8D9E6 100%);
+            --card-bg: white;
+        }
+
+        /* โหมดกลางคืน (Twilight Mode) */
+        body.dark-theme {
+            --primary: #7C98A6; 
+            --success: #75A38C; 
+            --warning: #D1AC86; 
+            --danger:  #C48383; 
+            --text-main: #E0E6ED; 
+            --text-muted: #95A5A6;
+            --glass-bg: rgba(30, 40, 50, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --bg-gradient: linear-gradient(135deg, #1A252F 0%, #101820 100%);
+            --card-bg: rgba(30, 40, 50, 0.95);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans Thai', sans-serif; }
 
         body {
-            /* ไล่สีจากเขียวใบไม้หม่น ไปยังสีฟ้าท้องฟ้าโปร่ง (Therapeutic Gradient) */
-            background: linear-gradient(135deg, #E3EADD 0%, #C8D9E6 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            color: var(--text-main);
-            overscroll-behavior-y: none; 
+            background: var(--bg-gradient);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; color: var(--text-main); overscroll-behavior-y: none; 
+            transition: background 0.8s ease;
         }
 
-        /* 📱 Responsive Device Frame */
         .device-frame {
-            width: 100%;
-            height: 100vh; 
-            background: rgba(255, 255, 255, 0.35);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            width: 100%; height: 100vh; 
+            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            position: relative; overflow: hidden; display: flex; flex-direction: column;
+            transition: all 0.5s ease;
         }
 
-        /* 💻 สำหรับหน้าจอที่ใหญ่กว่ามือถือ */
         @media (min-width: 600px) {
             .device-frame {
-                max-width: 420px;
-                height: 90vh;
-                max-height: 850px;
-                border-radius: 40px;
-                border: 1px solid rgba(255, 255, 255, 0.8);
-                box-shadow: 0 30px 60px rgba(74, 109, 124, 0.15);
+                max-width: 420px; height: 90vh; max-height: 850px;
+                border-radius: 40px; border: 1px solid var(--glass-border);
+                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
             }
         }
 
-        .progress-bar {
-            position: absolute;
-            top: 5%; 
-            left: 8%; right: 8%;
-            height: 4px;
-            background: rgba(255,255,255,0.4);
-            border-radius: 4px;
-            z-index: 10;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            width: 20%;
-            background: var(--primary);
-            border-radius: 4px;
-            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        /* Floating Controls */
+        .controls-top { position: absolute; top: 20px; width: 100%; display: flex; justify-content: space-between; padding: 0 8%; z-index: 100; }
+        .icon-toggle { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; color: var(--text-main); }
+        .icon-toggle:active { transform: scale(0.9); }
 
-        .screen {
-            position: absolute;
-            top: 10%; left: 0; right: 0; bottom: 0;
-            padding: 20px 8%;
-            display: flex;
-            flex-direction: column;
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(20px);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .screen.active {
-            opacity: 1; pointer-events: all; transform: translateY(0);
-        }
+        .progress-bar { position: absolute; top: 12%; left: 8%; right: 8%; height: 4px; background: rgba(128,128,128,0.2); border-radius: 4px; z-index: 10; overflow: hidden; }
+        .progress-fill { height: 100%; width: 20%; background: var(--primary); border-radius: 4px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        .screen { position: absolute; top: 15%; left: 0; right: 0; bottom: 0; padding: 20px 8%; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(20px); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .screen.active { opacity: 1; pointer-events: all; transform: translateY(0); }
 
         h1 { font-size: clamp(24px, 6vw, 28px); font-weight: 600; margin-bottom: 8px; color: var(--primary); }
         p.subtitle { font-size: clamp(14px, 3.5vw, 15px); color: var(--text-muted); margin-bottom: 30px; line-height: 1.5; }
 
-        .btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 16px;
-            border-radius: 20px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.2s;
-            margin-top: auto;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 20px rgba(74, 109, 124, 0.2);
-        }
+        .btn { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 20px; font-size: 16px; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.2s; margin-top: auto; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .btn:active { transform: scale(0.97); }
-        .btn:disabled { background: rgba(74, 109, 124, 0.4); box-shadow: none; cursor: not-allowed; }
+        .btn:disabled { background: var(--glass-bg); color: var(--text-muted); box-shadow: none; cursor: not-allowed; border: 1px solid var(--glass-border); }
 
         .mood-grid { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
-        .mood-btn {
-            font-size: clamp(30px, 8vw, 40px);
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 50%;
-            width: clamp(60px, 15vw, 75px); 
-            height: clamp(60px, 15vw, 75px);
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            filter: grayscale(100%) opacity(0.5);
-        }
-        .mood-btn.active {
-            filter: grayscale(0%) opacity(1); transform: scale(1.15); background: white;
-            box-shadow: 0 10px 20px rgba(74, 109, 124, 0.15);
-            border-color: white;
-        }
+        .mood-btn { font-size: clamp(30px, 8vw, 40px); background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 50%; width: clamp(60px, 15vw, 75px); height: clamp(60px, 15vw, 75px); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s ease; filter: grayscale(100%) opacity(0.5); }
+        .mood-btn.active { filter: grayscale(0%) opacity(1); transform: scale(1.15); background: var(--card-bg); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
 
         .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        input[type="text"] {
-            flex: 1;
-            padding: 16px 20px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            font-size: 15px;
-            color: var(--text-main);
-            outline: none;
-            backdrop-filter: blur(10px);
-            width: 100%;
-            transition: all 0.3s;
-        }
-        input[type="text"]:focus { background: white; box-shadow: 0 5px 15px rgba(74, 109, 124, 0.1); }
-        input[type="text"]::placeholder { color: #A5B1C2; }
-        .btn-add {
-            background: white; color: var(--primary); border: 1px solid var(--glass-border);
-            border-radius: 20px; padding: 0 20px; font-size: 24px; cursor: pointer;
-            transition: all 0.2s; box-shadow: 0 5px 10px rgba(74, 109, 124, 0.05);
-        }
+        input[type="text"] { flex: 1; padding: 16px 20px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; font-size: 15px; color: var(--text-main); outline: none; transition: all 0.3s; }
+        input[type="text"]:focus { background: var(--card-bg); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .btn-add { background: var(--card-bg); color: var(--primary); border: 1px solid var(--glass-border); border-radius: 20px; padding: 0 20px; font-size: 24px; cursor: pointer; transition: 0.2s; }
         .btn-add:active { transform: scale(0.9); }
 
         .task-list { flex: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 20px; }
-        .task-item {
-            background: var(--glass-bg); padding: 15px 20px; border-radius: 16px; margin-bottom: 12px;
-            font-size: 14px; border: 1px solid var(--glass-border); color: var(--text-main);
-            display: flex; align-items: center; justify-content: space-between; transition: all 0.3s ease;
-        }
+        .task-item, .organize-card { background: var(--glass-bg); padding: 15px 20px; border-radius: 16px; margin-bottom: 12px; font-size: 14px; border: 1px solid var(--glass-border); color: var(--text-main); transition: 0.3s; }
         
-        .task-content { display: flex; align-items: center; width: 100%; }
-        .task-text { flex: 1; word-break: break-word; padding-right: 10px; line-height: 1.4; }
-        
-        /* สไตล์ของปุ่มลบ/แก้ไข */
-        .task-actions { display: flex; gap: 8px; opacity: 0.5; transition: 0.3s; }
+        .task-content { display: flex; align-items: center; justify-content: space-between; }
+        .task-actions { opacity: 0.5; transition: 0.3s; }
         .task-item:hover .task-actions { opacity: 1; }
-        .icon-btn { background: none; border: none; font-size: 16px; cursor: pointer; transition: 0.2s; filter: grayscale(100%); padding: 2px;}
-        .icon-btn:hover { filter: grayscale(0%); transform: scale(1.15); }
-        
-        /* สไตล์ตอนกำลังแก้ไขข้อความ */
-        .edit-input { flex: 1; padding: 10px 15px; border: 1px solid var(--primary); border-radius: 12px; font-size: 14px; outline: none; background: white; color: var(--text-main); }
-        .btn-save-edit { background: var(--primary); color: white; border: none; border-radius: 12px; padding: 0 15px; font-size: 14px; cursor: pointer; margin-left: 8px; transition: 0.2s; }
-        .btn-save-edit:active { transform: scale(0.95); }
+        .icon-btn { background: none; border: none; font-size: 16px; cursor: pointer; filter: grayscale(100%); transition: 0.2s; }
+        .icon-btn:hover { filter: grayscale(0%); transform: scale(1.2); }
 
-        .organize-card { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 15px; border-radius: 20px; margin-bottom: 15px; }
-        .organize-title { font-weight: 500; margin-bottom: 15px; text-align: center; font-size: 15px; color: var(--text-main);}
+        .organize-title { font-weight: 500; margin-bottom: 15px; text-align: center; color: var(--text-main); }
         .tag-group { display: flex; gap: 8px; flex-wrap: wrap; }
-        .tag-btn {
-            flex: 1; min-width: 80px; padding: 12px 0; border: none; background: rgba(255,255,255,0.6);
-            border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer;
-            display: flex; flex-direction: column; align-items: center; gap: 6px; transition: 0.3s;
-        }
-        .tag-btn span { font-size: 18px; filter: grayscale(50%); transition: 0.3s; }
+        .tag-btn { flex: 1; min-width: 80px; padding: 10px 0; border: 1px solid transparent; background: rgba(128,128,128,0.1); border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.3s; }
+        .tag-btn span { font-size: 18px; filter: grayscale(100%); transition: 0.3s; }
         
-        /* สีกดปุ่มที่ปรับให้อ่อนโยนลง */
-        .tag-btn.active-tomorrow { background: white; color: var(--success); box-shadow: 0 5px 15px rgba(91, 138, 114, 0.2); }
-        .tag-btn.active-tomorrow span { filter: grayscale(0%); }
-        
-        .tag-btn.active-later { background: white; color: var(--warning); box-shadow: 0 5px 15px rgba(196, 154, 108, 0.2); }
-        .tag-btn.active-later span { filter: grayscale(0%); }
-        
-        .tag-btn.active-drop { background: white; color: var(--danger); box-shadow: 0 5px 15px rgba(181, 107, 107, 0.2); }
-        .tag-btn.active-drop span { filter: grayscale(0%); }
+        .tag-btn.active-tomorrow { background: var(--card-bg); color: var(--success); border-color: var(--success); }
+        .tag-btn.active-later { background: var(--card-bg); color: var(--warning); border-color: var(--warning); }
+        .tag-btn.active-drop { background: var(--card-bg); color: var(--danger); border-color: var(--danger); }
+        .tag-btn[class*="active-"] span { filter: grayscale(0%); }
 
-        .recharge-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; }
-        .recharge-card {
-            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px;
-            padding: 20px 10px; text-align: center; cursor: pointer; transition: 0.3s;
-            color: var(--text-muted);
-        }
-        .recharge-card.active { 
-            background: white; transform: translateY(-3px); 
-            box-shadow: 0 10px 20px rgba(74, 109, 124, 0.15); 
-            color: var(--primary); border-color: white;
-        }
+        .recharge-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .recharge-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px 10px; text-align: center; cursor: pointer; transition: 0.3s; color: var(--text-muted); }
+        .recharge-card.active { background: var(--card-bg); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); color: var(--primary); border-color: var(--primary); }
         .recharge-card.active .recharge-icon { filter: grayscale(0%); }
-        .recharge-icon { font-size: 28px; margin-bottom: 8px; filter: grayscale(50%); transition: 0.3s;}
-        .recharge-label { font-size: 13px; font-weight: 500; }
+        .recharge-icon { font-size: 28px; margin-bottom: 8px; filter: grayscale(100%); transition: 0.3s; }
 
-        .summary-card { background: white; border-radius: 24px; padding: 25px; text-align: center; margin-bottom: 20px; box-shadow: 0 15px 30px rgba(74, 109, 124, 0.1); }
-        
+        /* Breathing Visualizer */
+        .breathing-zone { display: none; text-align: center; margin-top: 20px; }
+        .breathing-circle { width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle, var(--success) 0%, transparent 70%); margin: 30px auto; opacity: 0.7; animation: breatheAnim 19s infinite linear; }
+        #breathText { color: var(--success); font-weight: 500; margin-top: 15px; font-size: 15px; }
+        @keyframes breatheAnim {
+            0% { transform: scale(1); opacity: 0.5; }
+            21% { transform: scale(2); opacity: 1; } /* 4s in */
+            58% { transform: scale(2); opacity: 1; } /* 7s hold */
+            100% { transform: scale(1); opacity: 0.5; } /* 8s out */
+        }
+
+        .summary-card { background: var(--card-bg); border-radius: 24px; padding: 25px; text-align: center; margin-bottom: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.05); }
+        .stats-box { font-size: 12px; color: var(--text-muted); margin-top: 20px; border-top: 1px dashed var(--glass-border); padding-top: 15px; }
+
         ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
 <body>
 
     <div class="device-frame">
+        <!-- Controls -->
+        <div class="controls-top">
+            <button class="icon-toggle" onclick="toggleDarkMode()" title="สลับโหมดกลางวัน/กลางคืน">🌓</button>
+            <button class="icon-toggle" onclick="toggleNoise()" id="soundToggle" title="เปิด/ปิดเสียง White Noise">🎧</button>
+        </div>
+
         <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
 
         <!-- Step 1 -->
@@ -227,10 +144,10 @@
             <h1>พักสักนิดนะ</h1>
             <p class="subtitle">เช็คอินอารมณ์ของคุณในตอนนี้กันหน่อย</p>
             <div class="mood-grid">
-                <div class="mood-btn" onclick="selectMood(this)">😫</div>
-                <div class="mood-btn" onclick="selectMood(this)">😮‍💨</div>
-                <div class="mood-btn" onclick="selectMood(this)">😌</div>
-                <div class="mood-btn" onclick="selectMood(this)">😊</div>
+                <div class="mood-btn" onclick="selectMood(this, '😫')">😫</div>
+                <div class="mood-btn" onclick="selectMood(this, '😮‍💨')">😮‍💨</div>
+                <div class="mood-btn" onclick="selectMood(this, '😌')">😌</div>
+                <div class="mood-btn" onclick="selectMood(this, '😊')">😊</div>
             </div>
             <button class="btn" id="btnNext1" onclick="nextStep(2)" disabled>ค่อยๆ จัดการความคิด</button>
         </div>
@@ -238,9 +155,9 @@
         <!-- Step 2 -->
         <div class="screen" id="step-2">
             <h1>พื้นที่ปลอดภัย</h1>
-            <p class="subtitle">เขียนเรื่องที่วนเวียนอยู่ในหัวทิ้งไว้ที่นี่ จะได้เบาใจขึ้น</p>
+            <p class="subtitle">พิมพ์เรื่องที่กวนใจทิ้งไว้ แล้วเรามาค่อยๆ คลายมันทีละเรื่อง</p>
             <div class="input-group">
-                <input type="text" id="taskInput" placeholder="เช่น กังวลเรื่องงานวันพรุ่งนี้..." autocomplete="off" onkeypress="handleEnter(event)">
+                <input type="text" id="taskInput" placeholder="เช่น กังวลเรื่องงานพรุ่งนี้..." autocomplete="off" onkeypress="handleEnter(event)">
                 <button class="btn-add" onclick="addTask()">+</button>
             </div>
             <div class="task-list" id="brainDumpList"></div>
@@ -250,7 +167,7 @@
         <!-- Step 3 -->
         <div class="screen" id="step-3">
             <h1>จัดระเบียบใจ</h1>
-            <p class="subtitle">มองทีละเรื่อง แล้วตัดสินใจว่าจะวางมันไว้ตรงไหนดี</p>
+            <p class="subtitle">มองทีละเรื่อง ตัดสินใจว่าจะวางมันไว้ตรงไหนดี</p>
             <div class="task-list" id="organizeList"></div>
             <button class="btn" id="btnNext3" onclick="nextStep(4)" disabled>จัดการเรียบร้อยแล้ว</button>
         </div>
@@ -258,57 +175,155 @@
         <!-- Step 4 -->
         <div class="screen" id="step-4">
             <h1>เตรียมตัวพักผ่อน</h1>
-            <p class="subtitle">เลือก 1 สิ่งเล็กๆ เพื่อพาร่างกายและจิตใจกลับมาสู่ปัจจุบัน</p>
-            <div class="recharge-grid">
-                <div class="recharge-card" onclick="selectRecharge(this)">
-                    <div class="recharge-icon">🌿</div><div class="recharge-label">หลับตา 1 นาที</div>
+            <p class="subtitle">เลือก 1 สิ่งเพื่อดึงตัวเองกลับมาสู่ปัจจุบัน</p>
+            
+            <div class="recharge-grid" id="rechargeGrid">
+                <div class="recharge-card" onclick="selectRecharge(this, 'breath')">
+                    <div class="recharge-icon">🌬️</div><div style="font-size: 13px; font-weight: 500;">ฝึกหายใจ 4-7-8</div>
                 </div>
-                <div class="recharge-card" onclick="selectRecharge(this)">
-                    <div class="recharge-icon">🍵</div><div class="recharge-label">ดื่มน้ำช้าๆ</div>
+                <div class="recharge-card" onclick="selectRecharge(this, 'normal')">
+                    <div class="recharge-icon">🍵</div><div style="font-size: 13px; font-weight: 500;">ดื่มน้ำช้าๆ 1 แก้ว</div>
                 </div>
-                <div class="recharge-card" onclick="selectRecharge(this)">
-                    <div class="recharge-icon">🎵</div><div class="recharge-label">ฟังเสียงธรรมชาติ</div>
+                <div class="recharge-card" onclick="selectRecharge(this, 'normal')">
+                    <div class="recharge-icon">🎵</div><div style="font-size: 13px; font-weight: 500;">ฟังเสียงธรรมชาติ</div>
                 </div>
-                <div class="recharge-card" onclick="selectRecharge(this)">
-                    <div class="recharge-icon">🧘</div><div class="recharge-label">เหยียดตัวยืดไหล่เบาๆ</div>
+                <div class="recharge-card" onclick="selectRecharge(this, 'normal')">
+                    <div class="recharge-icon">🧘</div><div style="font-size: 13px; font-weight: 500;">เหยียดตัวยืดไหล่</div>
                 </div>
             </div>
+
+            <!-- Breathing Visualizer (ซ่อนไว้ตอนแรก) -->
+            <div class="breathing-zone" id="breathingZone">
+                <div class="breathing-circle"></div>
+                <div id="breathText">หายใจเข้า...</div>
+            </div>
+
             <button class="btn" id="btnNext4" onclick="goToSummary()" disabled>พร้อมพักผ่อนแล้ว</button>
         </div>
 
         <!-- Step 5 -->
         <div class="screen" id="step-5">
             <div class="summary-card">
-                <div style="font-size: 45px; margin-bottom: 15px;">🕊️</div>
+                <div style="font-size: 45px; margin-bottom: 10px;">🕊️</div>
                 <h2 style="font-size: 20px; margin-bottom: 8px; color: var(--primary);">เก่งมากครับ</h2>
-                <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">คุณอนุญาตให้ตัวเองปล่อยวางเรื่องหนักๆ ได้แล้ว</p>
-                <div style="background: rgba(91, 138, 114, 0.1); padding: 18px; border-radius: 16px; text-align: left; border: 1px solid rgba(91, 138, 114, 0.2);">
-                    <p style="font-size: 13px; font-weight: 600; margin-bottom: 10px; color: var(--success);">สิ่งที่เราจดไว้ให้สำหรับพรุ่งนี้:</p>
+                <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">คุณอนุญาตให้ตัวเองปล่อยวางเรื่องหนักๆ ได้แล้ว</p>
+                
+                <div style="background: rgba(128,128,128,0.1); padding: 15px; border-radius: 16px; text-align: left; margin-bottom:15px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
+                        <span style="font-size: 13px; font-weight: 600; color: var(--success);">สิ่งที่เราจดไว้ให้สำหรับพรุ่งนี้:</span>
+                        <button onclick="copyTomorrowTasks()" style="background:var(--success); color:white; border:none; border-radius:10px; padding:4px 10px; font-size:11px; cursor:pointer;">📋 คัดลอก</button>
+                    </div>
                     <ul id="tomorrowList" style="font-size: 13px; color: var(--text-main); padding-left: 20px; line-height: 1.7;"></ul>
                 </div>
+
+                <div class="stats-box" id="moodStats">
+                    <!-- สถิติอารมณ์จะมาแสดงตรงนี้ -->
+                </div>
             </div>
-            <button class="btn" onclick="closeApp()" style="background: transparent; color: var(--primary); border: 2px solid var(--primary); box-shadow: none;">ปิดแอป แล้วไปพักใจ</button>
+            <button class="btn" onclick="closeApp()" style="background: transparent; color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none;">ปิดแอป แล้วไปพักใจ</button>
         </div>
     </div>
 
     <script>
+        // --- 1. ระบบจัดการ State พื้นฐาน ---
         let tasks = [];
         let taskDecisions = {};
-        let editingIndex = -1; 
+        let currentMood = '';
+        let breathInterval;
 
+        // Haptic Feedback (สั่นเบาๆ)
+        function triggerHaptic() {
+            if(navigator.vibrate) navigator.vibrate(40);
+        }
+
+        // --- 2. ระบบ Dynamic Twilight Mode ---
+        let isDarkMode = false;
+        function initTheme() {
+            const hour = new Date().getHours();
+            // เปิดโหมดกลางคืนอัตโนมัติหากเลย 18.00 หรือก่อน 06.00
+            if (hour >= 18 || hour < 6) { 
+                document.body.classList.add('dark-theme');
+                isDarkMode = true;
+            }
+        }
+        function toggleDarkMode() {
+            triggerHaptic();
+            document.body.classList.toggle('dark-theme');
+            isDarkMode = !isDarkMode;
+        }
+
+        // --- 3. ระบบ Ambient Soundscape (Web Audio API) ---
+        let audioCtx;
+        let noiseNode;
+        let isPlayingNoise = false;
+        
+        function toggleNoise() {
+            triggerHaptic();
+            const btn = document.getElementById('soundToggle');
+            
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const bufferSize = audioCtx.sampleRate * 2; 
+                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+                const output = buffer.getChannelData(0);
+                
+                // สร้าง White Noise แบบสุ่ม
+                for (let i = 0; i < bufferSize; i++) {
+                    output[i] = Math.random() * 2 - 1;
+                }
+                
+                noiseNode = audioCtx.createBufferSource();
+                noiseNode.buffer = buffer;
+                noiseNode.loop = true;
+                
+                // ใช้ Lowpass Filter กรองเสียงแหลมออก ให้คล้ายเสียงลม/ฝนตกไกลๆ
+                const filter = audioCtx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 350; 
+                
+                // ลด Volume ลงไม่ให้รบกวนเกินไป
+                const gainNode = audioCtx.createGain();
+                gainNode.gain.value = 0.5;
+
+                noiseNode.connect(filter);
+                filter.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                noiseNode.start();
+                isPlayingNoise = true;
+                btn.style.background = 'var(--card-bg)';
+                btn.innerText = '🔊';
+            } else {
+                if (isPlayingNoise) {
+                    audioCtx.suspend();
+                    isPlayingNoise = false;
+                    btn.style.background = 'var(--glass-bg)';
+                    btn.innerText = '🎧';
+                } else {
+                    audioCtx.resume();
+                    isPlayingNoise = true;
+                    btn.style.background = 'var(--card-bg)';
+                    btn.innerText = '🔊';
+                }
+            }
+        }
+
+        // --- 4. Core Logic แอปพลิเคชัน ---
         function updateProgress(step) {
             document.getElementById('progressFill').style.width = `${(step / 5) * 100}%`;
         }
 
         function nextStep(stepNum) {
+            triggerHaptic();
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(`step-${stepNum}`).classList.add('active');
             updateProgress(stepNum);
         }
 
-        function selectMood(element) {
+        function selectMood(element, emoji) {
+            triggerHaptic();
             document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
             element.classList.add('active');
+            currentMood = emoji;
             document.getElementById('btnNext1').disabled = false;
         }
 
@@ -316,6 +331,7 @@
             const input = document.getElementById('taskInput');
             const val = input.value.trim();
             if (val) {
+                triggerHaptic();
                 tasks.push(val);
                 input.value = '';
                 renderBrainDump();
@@ -326,72 +342,24 @@
         function renderBrainDump() {
             const list = document.getElementById('brainDumpList');
             list.innerHTML = '';
-            
             tasks.forEach((task, index) => {
-                if (editingIndex === index) {
-                    // โหมดแก้ไขข้อความ
-                    list.innerHTML += `
-                    <div class="task-item">
-                        <div class="task-content">
-                            <input type="text" id="editInput-${index}" value="${task}" class="edit-input" onkeypress="handleEditEnter(event, ${index})">
-                            <button class="btn-save-edit" onclick="saveEdit(${index})">บันทึก</button>
+                list.innerHTML += `
+                <div class="task-item">
+                    <div class="task-content">
+                        <span style="word-break: break-word;">▪️ ${task}</span>
+                        <div class="task-actions">
+                            <button class="icon-btn" onclick="deleteTask(${index})">🗑️</button>
                         </div>
-                    </div>`;
-                } else {
-                    // โหมดแสดงผลปกติ พร้อมปุ่มแก้ไขและลบ
-                    list.innerHTML += `
-                    <div class="task-item">
-                        <div class="task-content">
-                            <span class="task-text">▪️ ${task}</span>
-                            <div class="task-actions">
-                                <button class="icon-btn" onclick="startEdit(${index})" title="แก้ไขข้อความ">✏️</button>
-                                <button class="icon-btn" onclick="deleteTask(${index})" title="ลบข้อความนี้">🗑️</button>
-                            </div>
-                        </div>
-                    </div>`;
-                }
+                    </div>
+                </div>`;
             });
             document.getElementById('btnNext2').disabled = tasks.length === 0;
-            
-            // Auto scroll (ทำงานเฉพาะตอนไม่ได้แก้ไขเพื่อไม่ให้จอกระตุก)
-            if (editingIndex === -1) {
-                list.scrollTop = list.scrollHeight;
-            }
+            list.scrollTop = list.scrollHeight;
         }
 
-        // เริ่มแก้ไขข้อความ
-        function startEdit(index) {
-            editingIndex = index;
-            renderBrainDump();
-            // หน่วงเวลาเล็กน้อยเพื่อให้ HTML เรนเดอร์เสร็จก่อนโฟกัสเคอร์เซอร์
-            setTimeout(() => {
-                const input = document.getElementById(`editInput-${index}`);
-                if (input) {
-                    input.focus();
-                    input.selectionStart = input.selectionEnd = input.value.length; // เลื่อนเคอร์เซอร์ไปท้ายประโยค
-                }
-            }, 50);
-        }
-
-        // บันทึกข้อความที่แก้ไข
-        function saveEdit(index) {
-            const val = document.getElementById(`editInput-${index}`).value.trim();
-            if(val) {
-                tasks[index] = val; // บันทึกทับของเดิม
-            }
-            editingIndex = -1; // ออกจากโหมดแก้ไข
-            renderBrainDump();
-        }
-
-        // กด Enter ตอนแก้ข้อความให้บันทึก
-        function handleEditEnter(e, index) { 
-            if(e.key === 'Enter') saveEdit(index); 
-        }
-
-        // ฟังก์ชันลบงาน
         function deleteTask(index) {
-            tasks.splice(index, 1); // เอาออกจาก Array
-            if (editingIndex === index) editingIndex = -1; // ถ้ายกเลิกการแก้ไขกลางคัน
+            triggerHaptic();
+            tasks.splice(index, 1);
             renderBrainDump();
         }
 
@@ -399,7 +367,6 @@
             const list = document.getElementById('organizeList');
             list.innerHTML = '';
             taskDecisions = {};
-            
             tasks.forEach((task, index) => {
                 list.innerHTML += `
                     <div class="organize-card">
@@ -417,14 +384,13 @@
         }
 
         function setTag(taskIndex, decision, btnElement) {
+            triggerHaptic();
             taskDecisions[taskIndex] = decision;
             const parent = btnElement.parentElement;
             parent.querySelectorAll('.tag-btn').forEach(btn => btn.classList.remove('active-tomorrow', 'active-later', 'active-drop'));
-
             if(decision === 'tomorrow') btnElement.classList.add('active-tomorrow');
             if(decision === 'later') btnElement.classList.add('active-later');
             if(decision === 'drop') btnElement.classList.add('active-drop');
-
             checkOrganizeDone();
         }
 
@@ -432,13 +398,67 @@
             document.getElementById('btnNext3').disabled = Object.keys(taskDecisions).length !== tasks.length;
         }
 
-        function selectRecharge(element) {
+        // --- 5. Interactive Breathing Visualizer ---
+        function selectRecharge(element, type) {
+            triggerHaptic();
             document.querySelectorAll('.recharge-card').forEach(c => c.classList.remove('active'));
             element.classList.add('active');
-            document.getElementById('btnNext4').disabled = false;
+            
+            const btnNext = document.getElementById('btnNext4');
+            const zone = document.getElementById('breathingZone');
+            
+            if(type === 'breath') {
+                zone.style.display = 'block';
+                startBreathingCycle();
+                btnNext.innerText = "หายใจเสร็จแล้ว / ไปต่อ";
+            } else {
+                zone.style.display = 'none';
+                clearInterval(breathInterval);
+                btnNext.innerText = "พร้อมพักผ่อนแล้ว";
+            }
+            btnNext.disabled = false;
+        }
+
+        function startBreathingCycle() {
+            clearInterval(breathInterval);
+            const text = document.getElementById('breathText');
+            
+            const cycle = () => {
+                text.innerText = "หายใจเข้าลึกๆ... (4)";
+                setTimeout(() => {
+                    text.innerText = "กลั้นไว้... (7)";
+                    setTimeout(() => {
+                        text.innerText = "ค่อยๆ หายใจออก... (8)";
+                    }, 7000);
+                }, 4000);
+            };
+            cycle(); // Run immediately
+            breathInterval = setInterval(cycle, 19000); // 4+7+8 = 19s
+        }
+
+        // --- 6. Summary, History & Clipboard ---
+        function saveMoodHistory() {
+            let hist = JSON.parse(localStorage.getItem('mindfulHistory') || '[]');
+            hist.push({ date: new Date().toLocaleDateString('th-TH'), mood: currentMood });
+            // เก็บเฉพาะ 7 ครั้งล่าสุด
+            if(hist.length > 7) hist.shift();
+            localStorage.setItem('mindfulHistory', JSON.stringify(hist));
+            
+            // สรุปสถิติ
+            const stats = {};
+            hist.forEach(item => { stats[item.mood] = (stats[item.mood] || 0) + 1; });
+            
+            let statsHtml = '<strong>สถิติการเช็คอินช่วงนี้:</strong><br>';
+            for(const [m, count] of Object.entries(stats)) {
+                statsHtml += `${m} ${count} ครั้ง &nbsp;&nbsp;`;
+            }
+            document.getElementById('moodStats').innerHTML = statsHtml;
         }
 
         function goToSummary() {
+            clearInterval(breathInterval);
+            saveMoodHistory();
+
             const tomorrowList = document.getElementById('tomorrowList');
             tomorrowList.innerHTML = '';
             let hasTomorrow = false;
@@ -451,40 +471,60 @@
             });
 
             if(!hasTomorrow) {
-                tomorrowList.innerHTML = '<li style="list-style:none; color: var(--text-muted); text-align: center; margin-top: 5px;">ไม่มีเรื่องต้องห่วง พักผ่อนให้เต็มที่ครับ 🌙</li>';
+                tomorrowList.innerHTML = '<li style="list-style:none; color: var(--text-muted); text-align: center;">ไม่มีงานค้าง พักผ่อนให้เต็มที่ครับ 🌙</li>';
             }
             nextStep(5);
         }
 
+        function copyTomorrowTasks() {
+            triggerHaptic();
+            let textToCopy = "📝 รายการที่ต้องทำพรุ่งนี้:\n";
+            let count = 0;
+            tasks.forEach((task, index) => {
+                if(taskDecisions[index] === 'tomorrow') {
+                    textToCopy += `- ${task}\n`;
+                    count++;
+                }
+            });
+
+            if(count > 0) {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    alert('คัดลอกลง Clipboard เรียบร้อยแล้ว! นำไปวางในแอปอื่นได้เลย');
+                }).catch(err => {
+                    alert('คัดลอกไม่สำเร็จ (เบราว์เซอร์อาจไม่รองรับ)');
+                });
+            } else {
+                alert('ไม่มีรายการสำหรับพรุ่งนี้ครับ');
+            }
+        }
+
         function closeApp() {
+            triggerHaptic();
+            if(isPlayingNoise) toggleNoise(); // ปิดเสียงถ้าเปิดอยู่
             const frame = document.querySelector('.device-frame');
-            frame.style.transition = "all 0.8s ease";
             frame.style.opacity = "0";
             frame.style.transform = "scale(0.95)";
             
-            // หน่วงเวลา 800ms รอให้แอนิเมชันเดิมเฟดออกจนจบ แล้วเปลี่ยนโครงสร้าง HTML ด้านใน
             setTimeout(() => {
                 frame.innerHTML = `
                     <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; opacity:0; transition: opacity 1s ease;" id="goodbye">
                         <div style="font-size:60px; margin-bottom:15px; filter: grayscale(20%);">🌙</div>
-                        <h2 style="color: var(--primary); font-size: 20px; font-weight: 600;">พักผ่อนให้เต็มที่นะครับ</h2>
-                        <p style="color: var(--text-muted); font-size: 14px; margin-top: 15px; cursor:pointer; text-decoration: underline;" onclick="location.reload()">แตะหน้าจอเพื่อเริ่มต้นใหม่</p>
+                        <h2 style="color: var(--primary); font-size: 20px;">ราตรีสวัสดิ์ พักผ่อนนะครับ</h2>
+                        <p style="color: var(--text-muted); font-size: 14px; margin-top: 20px; cursor:pointer; text-decoration: underline;" onclick="location.reload()">เริ่มใหม่อีกครั้ง</p>
                     </div>
                 `;
-                // เคลียร์พื้นหลังให้โปร่งใส โฟกัสไปที่คำกล่าวลาก่อน
                 frame.style.background = "transparent";
                 frame.style.border = "none";
                 frame.style.boxShadow = "none";
                 frame.style.opacity = "1";
                 frame.style.transform = "scale(1)";
                 
-                setTimeout(() => {
-                    document.getElementById('goodbye').style.opacity = "1";
-                }, 100);
-            }, 800);
+                setTimeout(() => { document.getElementById('goodbye').style.opacity = "1"; }, 100);
+            }, 500);
         }
 
-        // เริ่มแอป
+        // Initialize App
+        initTheme();
         updateProgress(1);
     </script>
 </body>
