@@ -3,172 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RESET - Mindful Horizon Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>RESET - Mindful Horizon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        /* ==============================
+           1. DESIGN TOKENS & VARIABLES
+           ============================== */
         :root {
-            /* Light Theme */
-            --primary: #4A6D7C; 
-            --success: #5B8A72; 
-            --warning: #C49A6C; 
-            --danger:  #B56B6B; 
+            --primary: #5A7D8F; 
+            --success: #6B9B82; 
+            --warning: #CBA57A; 
+            --danger:  #C07B7B; 
             --text-main: #2C3E50; 
-            --text-muted: #7F8C8D;
-            --glass-bg: rgba(255, 255, 255, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.6);
-            --bg-gradient: linear-gradient(135deg, #E3EADD 0%, #C8D9E6 100%);
+            --text-muted: #8395A7;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(90, 125, 143, 0.08);
+            --bg-gradient: linear-gradient(135deg, #E6EFE0 0%, #D4E4F0 100%);
             --card-bg: #FFFFFF;
         }
 
-        /* Dark (Twilight) Theme */
         body.dark-theme {
-            --primary: #7C98A6; 
-            --success: #75A38C; 
-            --warning: #D1AC86; 
-            --danger:  #C48383; 
-            --text-main: #E0E6ED; 
-            --text-muted: #95A5A6;
-            --glass-bg: rgba(30, 40, 50, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --bg-gradient: linear-gradient(135deg, #1A252F 0%, #101820 100%);
-            --card-bg: rgba(30, 40, 50, 0.95);
+            --primary: #8CAAB9; 
+            --success: #88B39D; 
+            --warning: #D9B790; 
+            --danger:  #D19393; 
+            --text-main: #F1F2F6; 
+            --text-muted: #A4B0BE;
+            --glass-bg: rgba(25, 34, 43, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            --bg-gradient: linear-gradient(135deg, #1E272E 0%, #151A1E 100%);
+            --card-bg: rgba(44, 62, 80, 0.95);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans Thai', sans-serif; }
 
         body {
-            background: var(--bg-gradient);
-            display: flex; justify-content: center; align-items: center;
+            background: var(--bg-gradient); display: flex; justify-content: center; align-items: center;
             min-height: 100vh; color: var(--text-main); overscroll-behavior-y: none; 
-            transition: background 0.8s ease;
+            transition: background 1s cubic-bezier(0.4, 0, 0.2, 1); line-height: 1.6;
         }
 
-        /* Accessibility: Focus styles */
-        :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+        :focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; border-radius: 8px;}
 
+        /* Custom Scrollbar for UX */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(128, 128, 128, 0.3); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(128, 128, 128, 0.5); }
+
+        /* ==============================
+           2. LAYOUT & FRAME
+           ============================== */
         .device-frame {
             width: 100%; height: 100vh; 
-            background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
             position: relative; overflow: hidden; display: flex; flex-direction: column;
-            transition: all 0.5s ease;
+            box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border);
+            transition: all 0.6s ease;
         }
 
         @media (min-width: 600px) {
-            .device-frame {
-                max-width: 420px; height: 90vh; max-height: 850px;
-                border-radius: 40px; border: 1px solid var(--glass-border);
-                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
-            }
+            .device-frame { max-width: 440px; height: 90vh; max-height: 850px; border-radius: 40px; }
         }
 
-        /* Header & Controls */
-        .controls-top { position: absolute; top: 20px; width: 100%; display: flex; justify-content: space-between; padding: 0 8%; z-index: 100; }
-        .icon-toggle { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; color: var(--text-main); }
+        /* Controls */
+        .controls-top { position: absolute; top: 24px; width: 100%; display: flex; justify-content: space-between; padding: 0 10%; z-index: 100; }
+        .icon-toggle { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 50%; width: 44px; height: 44px; font-size: 20px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; color: var(--text-main); box-shadow: 0 4px 12px rgba(0,0,0,0.05);}
+        .icon-toggle:hover { transform: translateY(-2px); }
         .icon-toggle:active { transform: scale(0.9); }
-        .icon-toggle.active { background: var(--card-bg); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .icon-toggle.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 8px 16px rgba(90, 125, 143, 0.2);}
 
-        .progress-bar { position: absolute; top: 12%; left: 8%; right: 8%; height: 4px; background: rgba(128,128,128,0.2); border-radius: 4px; z-index: 10; overflow: hidden; }
-        .progress-fill { height: 100%; width: 20%; background: var(--primary); border-radius: 4px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        /* Progress */
+        .progress-bar { position: absolute; top: 12%; left: 10%; right: 10%; height: 6px; background: rgba(128,128,128,0.15); border-radius: 6px; z-index: 10; overflow: hidden; }
+        .progress-fill { height: 100%; width: 20%; background: var(--primary); border-radius: 6px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 10px rgba(90,125,143,0.4);}
 
         /* Screens */
-        .screen { position: absolute; top: 15%; left: 0; right: 0; bottom: 0; padding: 20px 8%; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(20px); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        .screen.active { opacity: 1; pointer-events: all; transform: translateY(0); }
+        .screen { position: absolute; top: 16%; left: 0; right: 0; bottom: 0; padding: 20px 10%; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(30px) scale(0.98); transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .screen.active { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
 
-        h1 { font-size: clamp(24px, 6vw, 28px); font-weight: 600; margin-bottom: 8px; color: var(--primary); }
-        p.subtitle { font-size: clamp(14px, 3.5vw, 15px); color: var(--text-muted); margin-bottom: 30px; line-height: 1.5; }
+        /* ==============================
+           3. TYPOGRAPHY & COMPONENTS
+           ============================== */
+        h1 { font-size: clamp(26px, 7vw, 32px); font-weight: 600; margin-bottom: 8px; color: var(--primary); letter-spacing: -0.5px;}
+        p.subtitle { font-size: clamp(15px, 4vw, 16px); color: var(--text-muted); margin-bottom: 32px; font-weight: 300;}
 
         /* Buttons */
-        .btn { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 20px; font-size: 16px; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.2s; margin-top: auto; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .btn:active { transform: scale(0.97); }
-        .btn:disabled { background: var(--glass-bg); color: var(--text-muted); box-shadow: none; cursor: not-allowed; border: 1px solid var(--glass-border); }
-        .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; }
+        .btn { background: var(--primary); color: white; border: none; padding: 18px; border-radius: 24px; font-size: 16px; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.3s ease; margin-top: auto; margin-bottom: 30px; box-shadow: 0 12px 24px rgba(90, 125, 143, 0.25); letter-spacing: 0.5px; flex-shrink: 0;}
+        .btn:active { transform: scale(0.96); box-shadow: 0 6px 12px rgba(90, 125, 143, 0.15); }
+        .btn:disabled { background: var(--glass-bg); color: var(--text-muted); box-shadow: none; cursor: not-allowed; border: 1px solid var(--glass-border); opacity: 0.7;}
+        .btn:not(:disabled) { animation: softPulse 2.5s infinite; }
+        @keyframes softPulse { 0%, 100% { box-shadow: 0 12px 24px rgba(90, 125, 143, 0.25); } 50% { box-shadow: 0 12px 30px rgba(90, 125, 143, 0.4); transform: translateY(-1px); } }
+        .btn.btn-outline { background: transparent; color: var(--text-main); border: 2px solid var(--glass-border); box-shadow: none; animation: none;}
+        .btn.btn-outline:hover { background: var(--glass-border); }
 
-        /* Mood Grid */
-        .mood-grid { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
-        .mood-btn { font-size: clamp(30px, 8vw, 40px); background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 50%; width: clamp(60px, 15vw, 75px); height: clamp(60px, 15vw, 75px); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s ease; filter: grayscale(100%) opacity(0.5); }
-        .mood-btn.active { filter: grayscale(0%) opacity(1); transform: scale(1.15); background: var(--card-bg); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-
-        /* Inputs & Tasks */
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        input[type="text"] { flex: 1; padding: 16px 20px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; font-size: 15px; color: var(--text-main); outline: none; transition: all 0.3s; }
-        input[type="text"]:focus { background: var(--card-bg); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .btn-add { background: var(--card-bg); color: var(--primary); border: 1px solid var(--glass-border); border-radius: 20px; padding: 0 20px; font-size: 24px; cursor: pointer; transition: 0.2s; }
+        /* Input Group */
+        .input-group { display: flex; gap: 12px; margin-bottom: 24px; align-items: flex-end;}
+        textarea { flex: 1; padding: 18px 20px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; font-size: 15px; color: var(--text-main); outline: none; transition: all 0.3s; resize: none; overflow-y: auto; min-height: 60px; max-height: 150px; line-height: 1.5; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);}
+        textarea:focus { background: var(--card-bg); box-shadow: 0 8px 24px rgba(0,0,0,0.08); border-color: var(--primary);}
+        textarea::placeholder { color: var(--text-muted); opacity: 0.7;}
+        
+        .btn-add { background: var(--primary); color: white; border: none; border-radius: 20px; width: 60px; height: 60px; font-size: 28px; cursor: pointer; transition: 0.3s; box-shadow: 0 8px 16px rgba(90, 125, 143, 0.2); display:flex; justify-content:center; align-items:center; flex-shrink: 0;}
+        .btn-add:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(90, 125, 143, 0.3);}
         .btn-add:active { transform: scale(0.9); }
-
-        .task-list { flex: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 20px; }
-        .task-item, .organize-card { background: var(--glass-bg); padding: 15px 20px; border-radius: 16px; margin-bottom: 12px; font-size: 14px; border: 1px solid var(--glass-border); color: var(--text-main); transition: 0.3s; }
         
-        .task-content { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-        .task-text { flex: 1; word-break: break-word; line-height: 1.4; }
-        .task-actions { opacity: 0.5; transition: 0.3s; flex-shrink: 0; }
+        .shake { animation: shakeError 0.4s ease-in-out; }
+        @keyframes shakeError { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
+
+        /* Task Lists */
+        .task-list { flex: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 20px; scroll-behavior: smooth;}
+        .task-item, .organize-card { background: var(--glass-bg); padding: 18px 20px; border-radius: 20px; margin-bottom: 16px; font-size: 15px; border: 1px solid var(--glass-border); color: var(--text-main); transition: 0.3s; box-shadow: var(--glass-shadow); animation: slideUpFade 0.4s forwards;}
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .task-content { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+        .task-text { flex: 1; word-break: break-word; line-height: 1.5; font-weight: 400;}
+        .task-actions { opacity: 0.3; transition: 0.3s; flex-shrink: 0; padding-top: 2px;}
         .task-item:hover .task-actions { opacity: 1; }
-        .icon-btn { background: none; border: none; font-size: 16px; cursor: pointer; filter: grayscale(100%); transition: 0.2s; }
-        .icon-btn:hover { filter: grayscale(0%); transform: scale(1.2); }
-
-        /* Organization Tags */
-        .organize-title { font-weight: 500; margin-bottom: 15px; text-align: center; color: var(--text-main); word-break: break-word;}
-        .tag-group { display: flex; gap: 8px; flex-wrap: wrap; }
-        .tag-btn { flex: 1; min-width: 80px; padding: 10px 0; border: 1px solid transparent; background: rgba(128,128,128,0.1); border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.3s; }
-        .tag-btn span { font-size: 18px; filter: grayscale(100%); transition: 0.3s; }
         
-        .tag-btn.active-tomorrow { background: var(--card-bg); color: var(--success); border-color: var(--success); box-shadow: 0 4px 10px rgba(91, 138, 114, 0.15); }
-        .tag-btn.active-later { background: var(--card-bg); color: var(--warning); border-color: var(--warning); box-shadow: 0 4px 10px rgba(196, 154, 108, 0.15); }
-        .tag-btn.active-drop { background: var(--card-bg); color: var(--danger); border-color: var(--danger); box-shadow: 0 4px 10px rgba(181, 107, 107, 0.15); }
-        .tag-btn[class*="active-"] span { filter: grayscale(0%); }
+        .icon-btn { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 50%; width: 32px; height: 32px; font-size: 14px; cursor: pointer; filter: grayscale(100%); transition: 0.3s; box-shadow: 0 4px 8px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center;}
+        .icon-btn:hover { filter: grayscale(0%); transform: scale(1.15) rotate(5deg); color: var(--danger); border-color: var(--danger);}
 
-        /* Recharge Options */
-        .recharge-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .recharge-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px 10px; text-align: center; cursor: pointer; transition: 0.3s; color: var(--text-muted); }
-        .recharge-card.active { background: var(--card-bg); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); color: var(--primary); border-color: var(--primary); }
-        .recharge-card.active .recharge-icon { filter: grayscale(0%); }
-        .recharge-icon { font-size: 28px; margin-bottom: 8px; filter: grayscale(100%); transition: 0.3s; }
-        .recharge-label { font-size: 13px; font-weight: 500; }
+        /* Tags & Recharge Grids */
+        .mood-grid { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 40px; flex-wrap: wrap; }
+        .mood-btn { font-size: clamp(32px, 8vw, 44px); background: var(--glass-bg); border: 2px solid transparent; border-radius: 50%; width: clamp(65px, 16vw, 80px); height: clamp(65px, 16vw, 80px); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.4s ease; filter: grayscale(100%) opacity(0.4); box-shadow: var(--glass-shadow);}
+        .mood-btn.active { filter: grayscale(0%) opacity(1); transform: scale(1.15) translateY(-5px); background: var(--card-bg); border-color: var(--primary); box-shadow: 0 15px 25px rgba(90, 125, 143, 0.15); }
 
-        /* Breathing Visualizer */
-        .breathing-zone { display: none; text-align: center; margin-top: 20px; }
-        .breathing-circle { width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle, var(--success) 0%, transparent 70%); margin: 30px auto; opacity: 0.7; animation: breatheAnim 19s infinite linear; }
-        .breath-text { color: var(--success); font-weight: 500; margin-top: 15px; font-size: 15px; }
-        @keyframes breatheAnim {
-            0% { transform: scale(1); opacity: 0.5; }
-            21% { transform: scale(2); opacity: 1; } /* 4s in */
-            58% { transform: scale(2); opacity: 1; } /* 7s hold */
-            100% { transform: scale(1); opacity: 0.5; } /* 8s out */
-        }
-
-        /* Summary & Stats */
-        .summary-card { background: var(--card-bg); border-radius: 24px; padding: 25px; text-align: center; margin-bottom: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.05); }
-        .summary-icon { font-size: 45px; margin-bottom: 10px; }
-        .summary-title { font-size: 20px; margin-bottom: 8px; color: var(--primary); }
-        .summary-desc { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
+        .organize-title { font-weight: 500; margin-bottom: 16px; text-align: center; color: var(--text-main); word-break: break-word;}
+        .tag-group { display: flex; gap: 10px; flex-wrap: wrap; }
+        .tag-btn, .recharge-btn { flex: 1; min-width: 85px; padding: 12px 4px; border: 2px solid transparent; background: rgba(128,128,128,0.08); border-radius: 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; transition: 0.3s ease; }
+        .tag-btn span, .recharge-btn span { font-size: 22px; filter: grayscale(100%); transition: 0.3s; }
+        .tag-btn:hover, .recharge-btn:hover { background: rgba(128,128,128,0.15); transform: translateY(-2px);}
         
-        .tomorrow-box { background: rgba(128,128,128,0.1); padding: 15px; border-radius: 16px; text-align: left; margin-bottom: 15px; }
-        .tomorrow-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .tomorrow-title { font-size: 13px; font-weight: 600; color: var(--success); }
-        .btn-copy { background: var(--success); color: white; border: none; border-radius: 10px; padding: 4px 10px; font-size: 11px; cursor: pointer; transition: 0.2s; }
-        .btn-copy:active { transform: scale(0.9); }
-        .tomorrow-list { font-size: 13px; color: var(--text-main); padding-left: 20px; line-height: 1.7; }
-        .empty-state { list-style: none; color: var(--text-muted); text-align: center; padding-left: 0; }
+        .tag-btn.active-tomorrow { background: var(--card-bg); color: var(--success); border-color: var(--success); box-shadow: 0 8px 16px rgba(107, 155, 130, 0.15); transform: translateY(-3px);}
+        .tag-btn.active-later { background: var(--card-bg); color: var(--warning); border-color: var(--warning); box-shadow: 0 8px 16px rgba(203, 165, 122, 0.15); transform: translateY(-3px);}
+        .tag-btn.active-drop { background: var(--card-bg); color: var(--danger); border-color: var(--danger); box-shadow: 0 8px 16px rgba(192, 123, 123, 0.15); transform: translateY(-3px);}
+        .tag-btn[class*="active-"] span { filter: grayscale(0%) scale(1.2); }
 
-        .stats-box { font-size: 12px; color: var(--text-muted); margin-top: 20px; border-top: 1px dashed var(--glass-border); padding-top: 15px; }
-        .btn-reset-stats { background: transparent; color: var(--danger); border: none; font-size: 11px; margin-top: 12px; cursor: pointer; text-decoration: underline; opacity: 0.7; transition: 0.2s; }
-        .btn-reset-stats:hover { opacity: 1; }
+        .recharge-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px;}
+        .recharge-btn.active-recharge { background: var(--card-bg); color: var(--primary); border-color: var(--primary); box-shadow: 0 8px 16px rgba(90, 125, 143, 0.15); transform: translateY(-3px);}
+        .recharge-btn.active-recharge span { filter: grayscale(0%) scale(1.2); }
 
+        /* Breathing Zone */
+        .breathing-zone { display: none; text-align: center; padding: 10px; margin-top: 10px; opacity: 0; transition: opacity 0.5s ease;}
+        .breathing-zone.active { display: block; opacity: 1; }
+        .breath-text { color: var(--success); font-weight: 500; font-size: 18px; margin: 0; animation: fadeText 3s infinite;}
+
+        /* Summary Card */
+        .summary-card { background: var(--card-bg); border-radius: 28px; padding: 32px 24px; text-align: center; margin-bottom: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); border: 1px solid var(--glass-border);}
+        .summary-icon { font-size: 50px; margin-bottom: 12px; animation: float 6s ease-in-out infinite;}
+        @keyframes float { 0%, 100% {transform: translateY(0);} 50% {transform: translateY(-10px);} }
+        
+        .tomorrow-box { background: var(--glass-bg); padding: 20px; border-radius: 20px; text-align: left; margin-top: 24px; border: 1px solid var(--glass-border); box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);}
+        .tomorrow-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px;}
+        .tomorrow-title { font-weight: 600; color: var(--success); font-size: 14px;}
+        .tomorrow-list { padding-left: 20px; color: var(--text-main); font-size: 14px; margin: 0; }
+        .tomorrow-list li { margin-bottom: 8px; }
+        .empty-state { list-style: none; color: var(--text-muted); text-align: center; margin-left: -20px; }
+
+        .btn-copy { background: var(--success); color: white; border: none; border-radius: 12px; padding: 6px 12px; font-size: 12px; font-weight: 500; cursor: pointer; transition: 0.2s; display: flex; gap: 6px; align-items: center;}
+        
         /* Goodbye Screen */
-        .goodbye-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; opacity: 0; transition: opacity 1s ease; }
-        .goodbye-icon { font-size: 60px; margin-bottom: 15px; filter: grayscale(20%); }
-        .goodbye-title { color: var(--primary); font-size: 20px; font-weight: 600; }
-        .goodbye-desc { color: var(--text-muted); font-size: 14px; margin-top: 20px; cursor: pointer; text-decoration: underline; }
+        .goodbye-container { display:flex; height:100%; align-items:center; justify-content:center; flex-direction:column; gap:20px; text-align:center; }
+        .goodbye-icon { font-size:70px; filter: grayscale(20%); animation: float 6s infinite; }
+        .goodbye-title { color:var(--primary); font-size:24px; margin:0;}
 
-        ::-webkit-scrollbar { width: 0px; }
+        /* UX: Toast Notification */
+        .toast { position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); background: var(--card-bg); color: var(--text-main); padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 500; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--glass-border); opacity: 0; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 1000; display: flex; align-items: center; gap: 8px;}
+        .toast.show { bottom: 40px; opacity: 1; }
     </style>
 </head>
 <body>
 
     <main class="device-frame" id="appFrame">
+        <!-- Toast Notification -->
+        <div class="toast" id="toastBox">✅ คัดลอกสำเร็จ</div>
+
         <!-- Header Controls -->
         <header class="controls-top">
-            <button class="icon-toggle" id="themeToggle" onclick="toggleDarkMode()" aria-label="สลับโหมดกลางวัน/กลางคืน">🌓</button>
-            <button class="icon-toggle" id="soundToggle" onclick="toggleNoise()" aria-label="เปิด/ปิดเสียงธรรมชาติ">🎧</button>
+            <button class="icon-toggle" id="themeToggle" onclick="toggleDarkMode()">🌓</button>
+            <button class="icon-toggle" id="soundToggle" onclick="toggleNoise()">🎧</button>
         </header>
 
         <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
@@ -178,10 +192,10 @@
             <h1>พักสักนิดนะ</h1>
             <p class="subtitle">เช็คอินอารมณ์ของคุณในตอนนี้กันหน่อย</p>
             <div class="mood-grid">
-                <button class="mood-btn" onclick="selectMood(this, '😫')" aria-label="เครียดมาก">😫</button>
-                <button class="mood-btn" onclick="selectMood(this, '😮‍💨')" aria-label="เหนื่อยล้า">😮‍💨</button>
-                <button class="mood-btn" onclick="selectMood(this, '😌')" aria-label="ผ่อนคลาย">😌</button>
-                <button class="mood-btn" onclick="selectMood(this, '😊')" aria-label="มีความสุข">😊</button>
+                <button class="mood-btn" onclick="selectMood(this, '😫')">😫</button>
+                <button class="mood-btn" onclick="selectMood(this, '😮‍💨')">😮‍💨</button>
+                <button class="mood-btn" onclick="selectMood(this, '😌')">😌</button>
+                <button class="mood-btn" onclick="selectMood(this, '😊')">😊</button>
             </div>
             <button class="btn" id="btnNext1" onclick="nextStep(2)" disabled>ค่อยๆ จัดการความคิด</button>
         </section>
@@ -191,10 +205,10 @@
             <h1>พื้นที่ปลอดภัย</h1>
             <p class="subtitle">พิมพ์เรื่องที่กวนใจทิ้งไว้ แล้วเรามาค่อยๆ คลายมันทีละเรื่อง</p>
             <div class="input-group">
-                <input type="text" id="taskInput" placeholder="เช่น กังวลเรื่องงานพรุ่งนี้..." autocomplete="off" onkeypress="handleEnter(event)" aria-label="ช่องกรอกสิ่งที่กังวล">
-                <button class="btn-add" onclick="addTask()" aria-label="เพิ่มรายการ">+</button>
+                <textarea id="taskInput" placeholder="เช่น กังวลเรื่องงานพรุ่งนี้..." oninput="autoResize(this)" onkeypress="handleEnter(event)"></textarea>
+                <button class="btn-add" onclick="addTask()">+</button>
             </div>
-            <div class="task-list" id="brainDumpList" aria-live="polite"></div>
+            <div class="task-list" id="brainDumpList"></div>
             <button class="btn" id="btnNext2" onclick="goToOrganize()" disabled>ไปต่ออย่างช้าๆ</button>
         </section>
 
@@ -211,26 +225,16 @@
             <h1>เตรียมตัวพักผ่อน</h1>
             <p class="subtitle">เลือก 1 สิ่งเพื่อดึงตัวเองกลับมาสู่ปัจจุบัน</p>
             
-            <div class="recharge-grid" id="rechargeGrid">
-                <div class="recharge-card" onclick="selectRecharge(this, 'breath')">
-                    <div class="recharge-icon">🌬️</div><div class="recharge-label">ฝึกหายใจ 4-7-8</div>
-                </div>
-                <div class="recharge-card" onclick="selectRecharge(this, 'normal')">
-                    <div class="recharge-icon">🍵</div><div class="recharge-label">ดื่มน้ำช้าๆ 1 แก้ว</div>
-                </div>
-                <div class="recharge-card" onclick="selectRecharge(this, 'normal')">
-                    <div class="recharge-icon">🎵</div><div class="recharge-label">ฟังเสียงธรรมชาติ</div>
-                </div>
-                <div class="recharge-card" onclick="selectRecharge(this, 'normal')">
-                    <div class="recharge-icon">🧘</div><div class="recharge-label">เหยียดตัวยืดไหล่</div>
-                </div>
+            <div class="recharge-grid" id="rechargeOptions">
+                <button class="recharge-btn" onclick="selectRecharge(this, 'breath')"><span>🌬️</span> ฝึกหายใจ</button>
+                <button class="recharge-btn" onclick="selectRecharge(this, 'normal')"><span>🍵</span> ดื่มน้ำช้าๆ</button>
+                <button class="recharge-btn" onclick="selectRecharge(this, 'normal')"><span>🎵</span> ฟังเสียงธรรมชาติ</button>
+                <button class="recharge-btn" onclick="selectRecharge(this, 'normal')"><span>🧘</span> ยืดเหยียดร่างกาย</button>
             </div>
 
             <div class="breathing-zone" id="breathingZone">
-                <div class="breathing-circle"></div>
-                <div class="breath-text" id="breathText">หายใจเข้า...</div>
+                <h3 class="breath-text" id="breathText">หายใจเข้า...</h3>
             </div>
-
             <button class="btn" id="btnNext4" onclick="goToSummary()" disabled>พร้อมพักผ่อนแล้ว</button>
         </section>
 
@@ -238,20 +242,15 @@
         <section class="screen" id="step-5">
             <div class="summary-card">
                 <div class="summary-icon">🕊️</div>
-                <h2 class="summary-title">เก่งมากครับ</h2>
-                <p class="summary-desc">คุณอนุญาตให้ตัวเองปล่อยวางเรื่องหนักๆ ได้แล้ว</p>
+                <h2 class="summary-title" style="color: var(--primary); margin-bottom: 8px;">เก่งมากครับ</h2>
+                <p style="color: var(--text-muted); font-size: 14px;">คุณอนุญาตให้ตัวเองปล่อยวางเรื่องหนักๆ ได้แล้ว</p>
                 
                 <div class="tomorrow-box">
                     <div class="tomorrow-header">
-                        <span class="tomorrow-title">สิ่งที่เราจดไว้ให้สำหรับพรุ่งนี้:</span>
-                        <button class="btn-copy" onclick="copyTomorrowTasks()" aria-label="คัดลอกรายการ">📋 คัดลอก</button>
+                        <span class="tomorrow-title">จดไว้สำหรับพรุ่งนี้</span>
+                        <button class="btn-copy" id="copyBtn" onclick="copyTomorrowTasks()">📋 คัดลอก</button>
                     </div>
                     <ul class="tomorrow-list" id="tomorrowList"></ul>
-                </div>
-
-                <div class="stats-box" id="moodStatsWrapper">
-                    <div id="moodStats"></div>
-                    <button class="btn-reset-stats" onclick="resetStats()">ล้างสถิติอารมณ์</button>
                 </div>
             </div>
             <button class="btn btn-outline" onclick="closeApp()">ปิดแอป แล้วไปพักใจ</button>
@@ -259,46 +258,31 @@
     </main>
 
     <script>
-        // --- 0. Utility Functions (Security & UX) ---
+        /* ==============================
+           CORE UTILITIES
+           ============================== */
+        function escapeHTML(str) { return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag])); }
+        function triggerHaptic() { if (navigator.vibrate) navigator.vibrate(40); }
         
-        // [Security Fix]: ป้องกัน XSS Injection 
-        function escapeHTML(str) {
-            return str.replace(/[&<>'"]/g, tag => ({
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                "'": '&#39;',
-                '"': '&quot;'
-            }[tag]));
+        // UX: Toast Notification Logic
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toastBox');
+            toast.innerHTML = message;
+            toast.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // Haptic Feedback
-        function triggerHaptic() {
-            if (navigator.vibrate) navigator.vibrate(40);
-        }
+        let tasks = [], taskDecisions = {}, currentMood = '', breathInterval;
 
-        // --- 1. State Management ---
-        let tasks = [];
-        let taskDecisions = {};
-        let currentMood = '';
-        let breathInterval;
-
-        // --- 2. Dynamic Twilight Mode ---
-        let isDarkMode = false;
-        
+        /* ==============================
+           THEME & AUDIO LOGIC
+           ============================== */
         function initTheme() {
             const hour = new Date().getHours();
-            if (hour >= 18 || hour < 6) { 
-                setTheme(true);
-            } else {
-                setTheme(false);
-            }
-        }
-
-        function setTheme(dark) {
-            isDarkMode = dark;
             const themeBtn = document.getElementById('themeToggle');
-            if (isDarkMode) {
+            if (hour >= 18 || hour < 6) { 
                 document.body.classList.add('dark-theme');
                 themeBtn.innerText = '☀️';
             } else {
@@ -306,70 +290,68 @@
                 themeBtn.innerText = '🌙';
             }
         }
-
-        function toggleDarkMode() {
+        
+        function toggleDarkMode() { 
             triggerHaptic();
-            setTheme(!isDarkMode);
+            const body = document.body;
+            body.classList.toggle('dark-theme'); 
+            document.getElementById('themeToggle').innerText = body.classList.contains('dark-theme') ? '☀️' : '🌙'; 
         }
 
-        // --- 3. Ambient Soundscape (Web Audio API) ---
-        let audioCtx;
-        let noiseNode;
-        let isPlayingNoise = false;
-        
-        function toggleNoise() {
+        let actx; 
+        function toggleNoise() { 
             triggerHaptic();
             const btn = document.getElementById('soundToggle');
             
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const bufferSize = audioCtx.sampleRate * 2; 
-                const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-                const output = buffer.getChannelData(0);
-                
-                for (let i = 0; i < bufferSize; i++) {
-                    output[i] = Math.random() * 2 - 1;
-                }
-                
-                noiseNode = audioCtx.createBufferSource();
-                noiseNode.buffer = buffer;
-                noiseNode.loop = true;
-                
-                const filter = audioCtx.createBiquadFilter();
-                filter.type = 'lowpass';
-                filter.frequency.value = 350; 
-                
-                const gainNode = audioCtx.createGain();
-                gainNode.gain.value = 0.5;
-
-                noiseNode.connect(filter);
-                filter.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                noiseNode.start();
-                
-                isPlayingNoise = true;
+            if(!actx) { 
+                actx = new (window.AudioContext || window.webkitAudioContext)(); 
+                const b = actx.createBuffer(1, actx.sampleRate*2, actx.sampleRate); 
+                const d = b.getChannelData(0); 
+                for(let i=0; i<b.length; i++) d[i] = Math.random()*2-1; 
+                const n = actx.createBufferSource(); 
+                n.buffer = b; n.loop = true; 
+                const f = actx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 350; 
+                const g = actx.createGain(); g.gain.value = 0.5; 
+                n.connect(f); f.connect(g); g.connect(actx.destination); 
+                n.start(); 
                 btn.classList.add('active');
                 btn.innerText = '🔊';
-            } else {
-                if (isPlayingNoise) {
-                    audioCtx.suspend();
-                    isPlayingNoise = false;
+            } else { 
+                if(actx.state === 'running') {
+                    actx.suspend(); 
                     btn.classList.remove('active');
                     btn.innerText = '🎧';
                 } else {
-                    audioCtx.resume();
-                    isPlayingNoise = true;
+                    actx.resume(); 
                     btn.classList.add('active');
                     btn.innerText = '🔊';
                 }
+            } 
+        }
+
+        /* ==============================
+           APP FLOW & LOGIC
+           ============================== */
+        function autoResize(textarea) { 
+            textarea.style.height = 'auto'; 
+            // Cap height visually, enable scroll if exceeds 150px
+            textarea.style.height = (textarea.scrollHeight < 150 ? textarea.scrollHeight : 150) + 'px'; 
+        }
+
+        function addTask() {
+            const input = document.getElementById('taskInput');
+            const val = input.value.trim();
+            if (val) {
+                triggerHaptic(); tasks.push(val); input.value = ''; autoResize(input); renderBrainDump();
+            } else {
+                triggerHaptic(); input.classList.add('shake'); setTimeout(() => input.classList.remove('shake'), 400);
             }
         }
 
-        // --- 4. Application Logic ---
-        function updateProgress(step) {
-            document.getElementById('progressFill').style.width = `${(step / 5) * 100}%`;
-        }
+        function handleEnter(e) { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); addTask(); } }
 
+        function updateProgress(step) { document.getElementById('progressFill').style.width = `${(step / 5) * 100}%`; }
+        
         function nextStep(stepNum) {
             triggerHaptic();
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -381,107 +363,54 @@
             triggerHaptic();
             document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
             element.classList.add('active');
-            currentMood = emoji;
-            document.getElementById('btnNext1').disabled = false;
-        }
-
-        function addTask() {
-            const input = document.getElementById('taskInput');
-            const val = input.value.trim();
-            if (val) {
-                triggerHaptic();
-                tasks.push(val); // เก็บ Raw data ไว้จัดการทีหลัง
-                input.value = '';
-                renderBrainDump();
-            }
-        }
-        
-        function handleEnter(e) { 
-            if(e.key === 'Enter') addTask(); 
+            currentMood = emoji; document.getElementById('btnNext1').disabled = false;
         }
 
         function renderBrainDump() {
             const list = document.getElementById('brainDumpList');
             list.innerHTML = '';
             tasks.forEach((task, index) => {
-                const safeTask = escapeHTML(task); // ใช้ escapeHTML ก่อนแสดงผลเสมอ
-                list.innerHTML += `
-                <div class="task-item">
-                    <div class="task-content">
-                        <span class="task-text">▪️ ${safeTask}</span>
-                        <div class="task-actions">
-                            <button class="icon-btn" onclick="deleteTask(${index})" aria-label="ลบรายการ">🗑️</button>
-                        </div>
-                    </div>
-                </div>`;
+                const safeTask = escapeHTML(task).replace(/\n/g, '<br>');
+                list.innerHTML += `<div class="task-item"><div class="task-content"><span class="task-text">${safeTask}</span><div class="task-actions"><button class="icon-btn" onclick="deleteTask(${index})">✕</button></div></div></div>`;
             });
-            document.getElementById('btnNext2').disabled = tasks.length === 0;
-            list.scrollTop = list.scrollHeight;
+            document.getElementById('btnNext2').disabled = tasks.length === 0; 
+            setTimeout(() => list.scrollTop = list.scrollHeight, 50);
         }
 
-        function deleteTask(index) {
-            triggerHaptic();
-            tasks.splice(index, 1);
-            renderBrainDump();
-        }
+        function deleteTask(index) { triggerHaptic(); tasks.splice(index, 1); renderBrainDump(); }
 
         function goToOrganize() {
-            const list = document.getElementById('organizeList');
-            list.innerHTML = '';
-            taskDecisions = {};
-            
+            const list = document.getElementById('organizeList'); list.innerHTML = ''; taskDecisions = {};
             tasks.forEach((task, index) => {
-                const safeTask = escapeHTML(task);
-                list.innerHTML += `
-                    <div class="organize-card">
-                        <div class="organize-title">${safeTask}</div>
-                        <div class="tag-group">
-                            <button class="tag-btn" onclick="setTag(${index}, 'tomorrow', this)"><span>🌱</span> ไว้พรุ่งนี้</button>
-                            <button class="tag-btn" onclick="setTag(${index}, 'later', this)"><span>🕰️</span> วันหลังค่อยคิด</button>
-                            <button class="tag-btn" onclick="setTag(${index}, 'drop', this)"><span>🍃</span> ปล่อยผ่านไป</button>
-                        </div>
-                    </div>
-                `;
+                list.innerHTML += `<div class="organize-card"><div class="organize-title">${escapeHTML(task)}</div><div class="tag-group"><button class="tag-btn" onclick="setTag(${index}, 'tomorrow', this)"><span>🌱</span> พรุ่งนี้</button><button class="tag-btn" onclick="setTag(${index}, 'later', this)"><span>🕰️</span> วันหลัง</button><button class="tag-btn" onclick="setTag(${index}, 'drop', this)"><span>🍃</span> ปล่อยไป</button></div></div>`;
             });
-            checkOrganizeDone();
-            nextStep(3);
+            document.getElementById('btnNext3').disabled = true; nextStep(3);
         }
 
-        function setTag(taskIndex, decision, btnElement) {
-            triggerHaptic();
-            taskDecisions[taskIndex] = decision;
-            const parent = btnElement.parentElement;
-            
-            parent.querySelectorAll('.tag-btn').forEach(btn => {
-                btn.classList.remove('active-tomorrow', 'active-later', 'active-drop');
-            });
-
-            if(decision === 'tomorrow') btnElement.classList.add('active-tomorrow');
-            if(decision === 'later') btnElement.classList.add('active-later');
-            if(decision === 'drop') btnElement.classList.add('active-drop');
-            
-            checkOrganizeDone();
-        }
-
-        function checkOrganizeDone() {
+        function setTag(taskIndex, decision, btn) {
+            triggerHaptic(); taskDecisions[taskIndex] = decision;
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active-tomorrow', 'active-later', 'active-drop'));
+            btn.classList.add(`active-${decision}`);
             document.getElementById('btnNext3').disabled = Object.keys(taskDecisions).length !== tasks.length;
         }
 
-        // --- 5. Breathing Visualizer ---
-        function selectRecharge(element, type) {
+        function selectRecharge(btn, type) {
             triggerHaptic();
-            document.querySelectorAll('.recharge-card').forEach(c => c.classList.remove('active'));
-            element.classList.add('active');
+            // Dev Fix: Use CSS Classes instead of inline styles
+            const container = document.getElementById('rechargeOptions');
+            container.querySelectorAll('.recharge-btn').forEach(b => b.classList.remove('active-recharge'));
+            btn.classList.add('active-recharge');
             
             const btnNext = document.getElementById('btnNext4');
             const zone = document.getElementById('breathingZone');
             
             if(type === 'breath') {
-                zone.style.display = 'block';
+                zone.classList.add('active');
                 startBreathingCycle();
                 btnNext.innerText = "หายใจเสร็จแล้ว / ไปต่อ";
             } else {
-                zone.style.display = 'none';
+                zone.classList.remove('active');
                 clearInterval(breathInterval);
                 btnNext.innerText = "พร้อมพักผ่อนแล้ว";
             }
@@ -491,150 +420,68 @@
         function startBreathingCycle() {
             clearInterval(breathInterval);
             const text = document.getElementById('breathText');
-            
             const cycle = () => {
                 text.innerText = "หายใจเข้าลึกๆ... (4)";
                 setTimeout(() => {
                     text.innerText = "กลั้นไว้... (7)";
-                    setTimeout(() => {
-                        text.innerText = "ค่อยๆ หายใจออก... (8)";
-                    }, 7000);
+                    setTimeout(() => { text.innerText = "ค่อยๆ หายใจออก... (8)"; }, 7000);
                 }, 4000);
             };
             cycle(); 
-            breathInterval = setInterval(cycle, 19000); // 4+7+8 = 19s
-        }
-
-        // --- 6. Summary & Data Handling ---
-        function updateStatsDisplay(hist) {
-            const statsElement = document.getElementById('moodStats');
-            if(hist.length === 0) {
-                statsElement.innerHTML = '<strong>สถิติการเช็คอินช่วงนี้:</strong><br>ยังไม่มีข้อมูล';
-                return;
-            }
-
-            const stats = {};
-            hist.forEach(item => { stats[item.mood] = (stats[item.mood] || 0) + 1; });
-            
-            let statsHtml = '<strong>สถิติการเช็คอินช่วงนี้:</strong><br>';
-            for(const [m, count] of Object.entries(stats)) {
-                statsHtml += `${m} ${count} ครั้ง &nbsp;&nbsp;`;
-            }
-            statsElement.innerHTML = statsHtml;
-        }
-
-        function saveMoodHistory() {
-            let hist = [];
-            try {
-                hist = JSON.parse(localStorage.getItem('mindfulHistory') || '[]');
-            } catch(e) {
-                console.error("Local storage read error", e);
-            }
-
-            hist.push({ date: new Date().toLocaleDateString('th-TH'), mood: currentMood });
-            
-            // Limit to last 7 entries
-            if(hist.length > 7) hist.shift();
-            
-            try {
-                localStorage.setItem('mindfulHistory', JSON.stringify(hist));
-            } catch(e) {
-                console.error("Local storage write error (Quota Exceeded?)", e);
-            }
-            
-            updateStatsDisplay(hist);
-        }
-
-        function resetStats() {
-            triggerHaptic();
-            if(confirm('ต้องการล้างประวัติอารมณ์ทั้งหมดใช่หรือไม่?')) {
-                localStorage.removeItem('mindfulHistory');
-                updateStatsDisplay([]);
-            }
+            breathInterval = setInterval(cycle, 19000);
         }
 
         function goToSummary() {
-            clearInterval(breathInterval);
-            saveMoodHistory();
-
-            const tomorrowList = document.getElementById('tomorrowList');
-            tomorrowList.innerHTML = '';
-            let hasTomorrow = false;
-
-            tasks.forEach((task, index) => {
-                if(taskDecisions[index] === 'tomorrow') {
-                    const li = document.createElement('li');
-                    li.textContent = task; // การใช้ textContent ป้องกัน XSS ได้อีกชั้น
-                    tomorrowList.appendChild(li);
-                    hasTomorrow = true;
-                }
+            const list = document.getElementById('tomorrowList'); list.innerHTML = ''; let has = false;
+            tasks.forEach((task, i) => {
+                if(taskDecisions[i] === 'tomorrow') { list.innerHTML += `<li>${escapeHTML(task)}</li>`; has = true; }
             });
-
-            if(!hasTomorrow) {
-                tomorrowList.innerHTML = '<li class="empty-state">ไม่มีงานค้าง พักผ่อนให้เต็มที่ครับ 🌙</li>';
+            if(!has) {
+                list.innerHTML = '<li class="empty-state">ไม่มีงานค้างเลยครับ พักผ่อนได้เต็มที่</li>';
+                document.getElementById('copyBtn').style.display = 'none';
             }
             nextStep(5);
         }
 
+        // UX Fix: Use Toast instead of alert for Clipboard
         function copyTomorrowTasks() {
             triggerHaptic();
             let textToCopy = "📝 รายการที่ต้องทำพรุ่งนี้:\n";
-            let count = 0;
-            
-            tasks.forEach((task, index) => {
-                if(taskDecisions[index] === 'tomorrow') {
-                    textToCopy += `- ${task}\n`;
-                    count++;
-                }
-            });
+            tasks.forEach((task, index) => { if(taskDecisions[index] === 'tomorrow') textToCopy += `- ${task}\n`; });
 
-            if(count > 0) {
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    alert('คัดลอกลง Clipboard เรียบร้อยแล้ว! นำไปวางในแอปอื่นได้เลย');
-                }).catch(err => {
-                    alert('คัดลอกไม่สำเร็จ (เบราว์เซอร์อาจไม่รองรับ)');
-                });
-            } else {
-                alert('ไม่มีรายการสำหรับพรุ่งนี้ครับ');
-            }
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast("✅ คัดลอกสำเร็จ นำไปวางได้เลย!");
+                const btn = document.getElementById('copyBtn');
+                btn.innerHTML = '✅ คัดลอกแล้ว';
+                setTimeout(() => { btn.innerHTML = '📋 คัดลอก'; }, 3000);
+            }).catch(() => {
+                showToast("❌ เบราว์เซอร์ไม่รองรับการคัดลอกอัตโนมัติ");
+            });
         }
 
         function closeApp() {
-            triggerHaptic();
-            if(isPlayingNoise) toggleNoise();
-            
+            if(actx && actx.state === 'running') toggleNoise(); 
             const frame = document.getElementById('appFrame');
             frame.style.opacity = "0";
-            frame.style.transform = "scale(0.95)";
             
             setTimeout(() => {
                 frame.innerHTML = `
-                    <div class="goodbye-screen" id="goodbye">
+                    <div class="goodbye-container">
                         <div class="goodbye-icon">🌙</div>
-                        <h2 class="goodbye-title">ราตรีสวัสดิ์ พักผ่อนนะครับ</h2>
-                        <p class="goodbye-desc" onclick="location.reload()">เริ่มใหม่อีกครั้ง</p>
-                    </div>
-                `;
-                // Remove visual frame properties
+                        <h2 class="goodbye-title">ราตรีสวัสดิ์ครับ</h2>
+                        <button class="btn btn-outline" onclick="location.reload()" style="width: auto; padding: 12px 30px; margin-top: 20px;">
+                            เริ่มใหม่อีกครั้ง 🔄
+                        </button>
+                    </div>`;
                 frame.style.background = "transparent";
                 frame.style.border = "none";
                 frame.style.boxShadow = "none";
-                frame.style.backdropFilter = "none";
-                frame.style.webkitBackdropFilter = "none";
-                
                 frame.style.opacity = "1";
-                frame.style.transform = "scale(1)";
-                
-                setTimeout(() => { 
-                    const goodbyeElement = document.getElementById('goodbye');
-                    if(goodbyeElement) goodbyeElement.style.opacity = "1"; 
-                }, 100);
             }, 500);
         }
 
-        // --- Initialize ---
+        // Init App
         initTheme();
-        updateProgress(1);
     </script>
 </body>
 </html>
