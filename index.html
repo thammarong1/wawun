@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* โหมดปกติ (กลางวัน) */
+            /* Light Theme */
             --primary: #4A6D7C; 
             --success: #5B8A72; 
             --warning: #C49A6C; 
@@ -17,10 +17,10 @@
             --glass-bg: rgba(255, 255, 255, 0.75);
             --glass-border: rgba(255, 255, 255, 0.6);
             --bg-gradient: linear-gradient(135deg, #E3EADD 0%, #C8D9E6 100%);
-            --card-bg: white;
+            --card-bg: #FFFFFF;
         }
 
-        /* โหมดกลางคืน (Twilight Mode) */
+        /* Dark (Twilight) Theme */
         body.dark-theme {
             --primary: #7C98A6; 
             --success: #75A38C; 
@@ -43,6 +43,9 @@
             transition: background 0.8s ease;
         }
 
+        /* Accessibility: Focus styles */
+        :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
         .device-frame {
             width: 100%; height: 100vh; 
             background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -58,28 +61,34 @@
             }
         }
 
-        /* Floating Controls */
+        /* Header & Controls */
         .controls-top { position: absolute; top: 20px; width: 100%; display: flex; justify-content: space-between; padding: 0 8%; z-index: 100; }
         .icon-toggle { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; color: var(--text-main); }
         .icon-toggle:active { transform: scale(0.9); }
+        .icon-toggle.active { background: var(--card-bg); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
         .progress-bar { position: absolute; top: 12%; left: 8%; right: 8%; height: 4px; background: rgba(128,128,128,0.2); border-radius: 4px; z-index: 10; overflow: hidden; }
         .progress-fill { height: 100%; width: 20%; background: var(--primary); border-radius: 4px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
 
+        /* Screens */
         .screen { position: absolute; top: 15%; left: 0; right: 0; bottom: 0; padding: 20px 8%; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(20px); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
         .screen.active { opacity: 1; pointer-events: all; transform: translateY(0); }
 
         h1 { font-size: clamp(24px, 6vw, 28px); font-weight: 600; margin-bottom: 8px; color: var(--primary); }
         p.subtitle { font-size: clamp(14px, 3.5vw, 15px); color: var(--text-muted); margin-bottom: 30px; line-height: 1.5; }
 
+        /* Buttons */
         .btn { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 20px; font-size: 16px; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.2s; margin-top: auto; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .btn:active { transform: scale(0.97); }
         .btn:disabled { background: var(--glass-bg); color: var(--text-muted); box-shadow: none; cursor: not-allowed; border: 1px solid var(--glass-border); }
+        .btn-outline { background: transparent; color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; }
 
+        /* Mood Grid */
         .mood-grid { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 40px; flex-wrap: wrap; }
         .mood-btn { font-size: clamp(30px, 8vw, 40px); background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 50%; width: clamp(60px, 15vw, 75px); height: clamp(60px, 15vw, 75px); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s ease; filter: grayscale(100%) opacity(0.5); }
         .mood-btn.active { filter: grayscale(0%) opacity(1); transform: scale(1.15); background: var(--card-bg); border-color: var(--primary); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
 
+        /* Inputs & Tasks */
         .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
         input[type="text"] { flex: 1; padding: 16px 20px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; font-size: 15px; color: var(--text-main); outline: none; transition: all 0.3s; }
         input[type="text"]:focus { background: var(--card-bg); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
@@ -89,32 +98,36 @@
         .task-list { flex: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 20px; }
         .task-item, .organize-card { background: var(--glass-bg); padding: 15px 20px; border-radius: 16px; margin-bottom: 12px; font-size: 14px; border: 1px solid var(--glass-border); color: var(--text-main); transition: 0.3s; }
         
-        .task-content { display: flex; align-items: center; justify-content: space-between; }
-        .task-actions { opacity: 0.5; transition: 0.3s; }
+        .task-content { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .task-text { flex: 1; word-break: break-word; line-height: 1.4; }
+        .task-actions { opacity: 0.5; transition: 0.3s; flex-shrink: 0; }
         .task-item:hover .task-actions { opacity: 1; }
         .icon-btn { background: none; border: none; font-size: 16px; cursor: pointer; filter: grayscale(100%); transition: 0.2s; }
         .icon-btn:hover { filter: grayscale(0%); transform: scale(1.2); }
 
-        .organize-title { font-weight: 500; margin-bottom: 15px; text-align: center; color: var(--text-main); }
+        /* Organization Tags */
+        .organize-title { font-weight: 500; margin-bottom: 15px; text-align: center; color: var(--text-main); word-break: break-word;}
         .tag-group { display: flex; gap: 8px; flex-wrap: wrap; }
         .tag-btn { flex: 1; min-width: 80px; padding: 10px 0; border: 1px solid transparent; background: rgba(128,128,128,0.1); border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.3s; }
         .tag-btn span { font-size: 18px; filter: grayscale(100%); transition: 0.3s; }
         
-        .tag-btn.active-tomorrow { background: var(--card-bg); color: var(--success); border-color: var(--success); }
-        .tag-btn.active-later { background: var(--card-bg); color: var(--warning); border-color: var(--warning); }
-        .tag-btn.active-drop { background: var(--card-bg); color: var(--danger); border-color: var(--danger); }
+        .tag-btn.active-tomorrow { background: var(--card-bg); color: var(--success); border-color: var(--success); box-shadow: 0 4px 10px rgba(91, 138, 114, 0.15); }
+        .tag-btn.active-later { background: var(--card-bg); color: var(--warning); border-color: var(--warning); box-shadow: 0 4px 10px rgba(196, 154, 108, 0.15); }
+        .tag-btn.active-drop { background: var(--card-bg); color: var(--danger); border-color: var(--danger); box-shadow: 0 4px 10px rgba(181, 107, 107, 0.15); }
         .tag-btn[class*="active-"] span { filter: grayscale(0%); }
 
+        /* Recharge Options */
         .recharge-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .recharge-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 20px 10px; text-align: center; cursor: pointer; transition: 0.3s; color: var(--text-muted); }
         .recharge-card.active { background: var(--card-bg); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); color: var(--primary); border-color: var(--primary); }
         .recharge-card.active .recharge-icon { filter: grayscale(0%); }
         .recharge-icon { font-size: 28px; margin-bottom: 8px; filter: grayscale(100%); transition: 0.3s; }
+        .recharge-label { font-size: 13px; font-weight: 500; }
 
         /* Breathing Visualizer */
         .breathing-zone { display: none; text-align: center; margin-top: 20px; }
         .breathing-circle { width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle, var(--success) 0%, transparent 70%); margin: 30px auto; opacity: 0.7; animation: breatheAnim 19s infinite linear; }
-        #breathText { color: var(--success); font-weight: 500; margin-top: 15px; font-size: 15px; }
+        .breath-text { color: var(--success); font-weight: 500; margin-top: 15px; font-size: 15px; }
         @keyframes breatheAnim {
             0% { transform: scale(1); opacity: 0.5; }
             21% { transform: scale(2); opacity: 1; } /* 4s in */
@@ -122,137 +135,184 @@
             100% { transform: scale(1); opacity: 0.5; } /* 8s out */
         }
 
+        /* Summary & Stats */
         .summary-card { background: var(--card-bg); border-radius: 24px; padding: 25px; text-align: center; margin-bottom: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.05); }
+        .summary-icon { font-size: 45px; margin-bottom: 10px; }
+        .summary-title { font-size: 20px; margin-bottom: 8px; color: var(--primary); }
+        .summary-desc { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
+        
+        .tomorrow-box { background: rgba(128,128,128,0.1); padding: 15px; border-radius: 16px; text-align: left; margin-bottom: 15px; }
+        .tomorrow-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .tomorrow-title { font-size: 13px; font-weight: 600; color: var(--success); }
+        .btn-copy { background: var(--success); color: white; border: none; border-radius: 10px; padding: 4px 10px; font-size: 11px; cursor: pointer; transition: 0.2s; }
+        .btn-copy:active { transform: scale(0.9); }
+        .tomorrow-list { font-size: 13px; color: var(--text-main); padding-left: 20px; line-height: 1.7; }
+        .empty-state { list-style: none; color: var(--text-muted); text-align: center; padding-left: 0; }
+
         .stats-box { font-size: 12px; color: var(--text-muted); margin-top: 20px; border-top: 1px dashed var(--glass-border); padding-top: 15px; }
+        .btn-reset-stats { background: transparent; color: var(--danger); border: none; font-size: 11px; margin-top: 12px; cursor: pointer; text-decoration: underline; opacity: 0.7; transition: 0.2s; }
+        .btn-reset-stats:hover { opacity: 1; }
+
+        /* Goodbye Screen */
+        .goodbye-screen { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; opacity: 0; transition: opacity 1s ease; }
+        .goodbye-icon { font-size: 60px; margin-bottom: 15px; filter: grayscale(20%); }
+        .goodbye-title { color: var(--primary); font-size: 20px; font-weight: 600; }
+        .goodbye-desc { color: var(--text-muted); font-size: 14px; margin-top: 20px; cursor: pointer; text-decoration: underline; }
 
         ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
 <body>
 
-    <div class="device-frame">
-        <!-- Controls -->
-        <div class="controls-top">
-            <button class="icon-toggle" onclick="toggleDarkMode()" title="สลับโหมดกลางวัน/กลางคืน">🌓</button>
-            <button class="icon-toggle" onclick="toggleNoise()" id="soundToggle" title="เปิด/ปิดเสียง White Noise">🎧</button>
-        </div>
+    <main class="device-frame" id="appFrame">
+        <!-- Header Controls -->
+        <header class="controls-top">
+            <button class="icon-toggle" id="themeToggle" onclick="toggleDarkMode()" aria-label="สลับโหมดกลางวัน/กลางคืน">🌓</button>
+            <button class="icon-toggle" id="soundToggle" onclick="toggleNoise()" aria-label="เปิด/ปิดเสียงธรรมชาติ">🎧</button>
+        </header>
 
         <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
 
-        <!-- Step 1 -->
-        <div class="screen active" id="step-1">
+        <!-- Step 1: Mood Check -->
+        <section class="screen active" id="step-1">
             <h1>พักสักนิดนะ</h1>
             <p class="subtitle">เช็คอินอารมณ์ของคุณในตอนนี้กันหน่อย</p>
             <div class="mood-grid">
-                <div class="mood-btn" onclick="selectMood(this, '😫')">😫</div>
-                <div class="mood-btn" onclick="selectMood(this, '😮‍💨')">😮‍💨</div>
-                <div class="mood-btn" onclick="selectMood(this, '😌')">😌</div>
-                <div class="mood-btn" onclick="selectMood(this, '😊')">😊</div>
+                <button class="mood-btn" onclick="selectMood(this, '😫')" aria-label="เครียดมาก">😫</button>
+                <button class="mood-btn" onclick="selectMood(this, '😮‍💨')" aria-label="เหนื่อยล้า">😮‍💨</button>
+                <button class="mood-btn" onclick="selectMood(this, '😌')" aria-label="ผ่อนคลาย">😌</button>
+                <button class="mood-btn" onclick="selectMood(this, '😊')" aria-label="มีความสุข">😊</button>
             </div>
             <button class="btn" id="btnNext1" onclick="nextStep(2)" disabled>ค่อยๆ จัดการความคิด</button>
-        </div>
+        </section>
 
-        <!-- Step 2 -->
-        <div class="screen" id="step-2">
+        <!-- Step 2: Brain Dump -->
+        <section class="screen" id="step-2">
             <h1>พื้นที่ปลอดภัย</h1>
             <p class="subtitle">พิมพ์เรื่องที่กวนใจทิ้งไว้ แล้วเรามาค่อยๆ คลายมันทีละเรื่อง</p>
             <div class="input-group">
-                <input type="text" id="taskInput" placeholder="เช่น กังวลเรื่องงานพรุ่งนี้..." autocomplete="off" onkeypress="handleEnter(event)">
-                <button class="btn-add" onclick="addTask()">+</button>
+                <input type="text" id="taskInput" placeholder="เช่น กังวลเรื่องงานพรุ่งนี้..." autocomplete="off" onkeypress="handleEnter(event)" aria-label="ช่องกรอกสิ่งที่กังวล">
+                <button class="btn-add" onclick="addTask()" aria-label="เพิ่มรายการ">+</button>
             </div>
-            <div class="task-list" id="brainDumpList"></div>
+            <div class="task-list" id="brainDumpList" aria-live="polite"></div>
             <button class="btn" id="btnNext2" onclick="goToOrganize()" disabled>ไปต่ออย่างช้าๆ</button>
-        </div>
+        </section>
 
-        <!-- Step 3 -->
-        <div class="screen" id="step-3">
+        <!-- Step 3: Organize -->
+        <section class="screen" id="step-3">
             <h1>จัดระเบียบใจ</h1>
             <p class="subtitle">มองทีละเรื่อง ตัดสินใจว่าจะวางมันไว้ตรงไหนดี</p>
             <div class="task-list" id="organizeList"></div>
             <button class="btn" id="btnNext3" onclick="nextStep(4)" disabled>จัดการเรียบร้อยแล้ว</button>
-        </div>
+        </section>
 
-        <!-- Step 4 -->
-        <div class="screen" id="step-4">
+        <!-- Step 4: Recharge -->
+        <section class="screen" id="step-4">
             <h1>เตรียมตัวพักผ่อน</h1>
             <p class="subtitle">เลือก 1 สิ่งเพื่อดึงตัวเองกลับมาสู่ปัจจุบัน</p>
             
             <div class="recharge-grid" id="rechargeGrid">
                 <div class="recharge-card" onclick="selectRecharge(this, 'breath')">
-                    <div class="recharge-icon">🌬️</div><div style="font-size: 13px; font-weight: 500;">ฝึกหายใจ 4-7-8</div>
+                    <div class="recharge-icon">🌬️</div><div class="recharge-label">ฝึกหายใจ 4-7-8</div>
                 </div>
                 <div class="recharge-card" onclick="selectRecharge(this, 'normal')">
-                    <div class="recharge-icon">🍵</div><div style="font-size: 13px; font-weight: 500;">ดื่มน้ำช้าๆ 1 แก้ว</div>
+                    <div class="recharge-icon">🍵</div><div class="recharge-label">ดื่มน้ำช้าๆ 1 แก้ว</div>
                 </div>
                 <div class="recharge-card" onclick="selectRecharge(this, 'normal')">
-                    <div class="recharge-icon">🎵</div><div style="font-size: 13px; font-weight: 500;">ฟังเสียงธรรมชาติ</div>
+                    <div class="recharge-icon">🎵</div><div class="recharge-label">ฟังเสียงธรรมชาติ</div>
                 </div>
                 <div class="recharge-card" onclick="selectRecharge(this, 'normal')">
-                    <div class="recharge-icon">🧘</div><div style="font-size: 13px; font-weight: 500;">เหยียดตัวยืดไหล่</div>
+                    <div class="recharge-icon">🧘</div><div class="recharge-label">เหยียดตัวยืดไหล่</div>
                 </div>
             </div>
 
-            <!-- Breathing Visualizer (ซ่อนไว้ตอนแรก) -->
             <div class="breathing-zone" id="breathingZone">
                 <div class="breathing-circle"></div>
-                <div id="breathText">หายใจเข้า...</div>
+                <div class="breath-text" id="breathText">หายใจเข้า...</div>
             </div>
 
             <button class="btn" id="btnNext4" onclick="goToSummary()" disabled>พร้อมพักผ่อนแล้ว</button>
-        </div>
+        </section>
 
-        <!-- Step 5 -->
-        <div class="screen" id="step-5">
+        <!-- Step 5: Summary -->
+        <section class="screen" id="step-5">
             <div class="summary-card">
-                <div style="font-size: 45px; margin-bottom: 10px;">🕊️</div>
-                <h2 style="font-size: 20px; margin-bottom: 8px; color: var(--primary);">เก่งมากครับ</h2>
-                <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">คุณอนุญาตให้ตัวเองปล่อยวางเรื่องหนักๆ ได้แล้ว</p>
+                <div class="summary-icon">🕊️</div>
+                <h2 class="summary-title">เก่งมากครับ</h2>
+                <p class="summary-desc">คุณอนุญาตให้ตัวเองปล่อยวางเรื่องหนักๆ ได้แล้ว</p>
                 
-                <div style="background: rgba(128,128,128,0.1); padding: 15px; border-radius: 16px; text-align: left; margin-bottom:15px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
-                        <span style="font-size: 13px; font-weight: 600; color: var(--success);">สิ่งที่เราจดไว้ให้สำหรับพรุ่งนี้:</span>
-                        <button onclick="copyTomorrowTasks()" style="background:var(--success); color:white; border:none; border-radius:10px; padding:4px 10px; font-size:11px; cursor:pointer;">📋 คัดลอก</button>
+                <div class="tomorrow-box">
+                    <div class="tomorrow-header">
+                        <span class="tomorrow-title">สิ่งที่เราจดไว้ให้สำหรับพรุ่งนี้:</span>
+                        <button class="btn-copy" onclick="copyTomorrowTasks()" aria-label="คัดลอกรายการ">📋 คัดลอก</button>
                     </div>
-                    <ul id="tomorrowList" style="font-size: 13px; color: var(--text-main); padding-left: 20px; line-height: 1.7;"></ul>
+                    <ul class="tomorrow-list" id="tomorrowList"></ul>
                 </div>
 
-                <div class="stats-box" id="moodStats">
-                    <!-- สถิติอารมณ์จะมาแสดงตรงนี้ -->
+                <div class="stats-box" id="moodStatsWrapper">
+                    <div id="moodStats"></div>
+                    <button class="btn-reset-stats" onclick="resetStats()">ล้างสถิติอารมณ์</button>
                 </div>
             </div>
-            <button class="btn" onclick="closeApp()" style="background: transparent; color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none;">ปิดแอป แล้วไปพักใจ</button>
-        </div>
-    </div>
+            <button class="btn btn-outline" onclick="closeApp()">ปิดแอป แล้วไปพักใจ</button>
+        </section>
+    </main>
 
     <script>
-        // --- 1. ระบบจัดการ State พื้นฐาน ---
+        // --- 0. Utility Functions (Security & UX) ---
+        
+        // [Security Fix]: ป้องกัน XSS Injection 
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                "'": '&#39;',
+                '"': '&quot;'
+            }[tag]));
+        }
+
+        // Haptic Feedback
+        function triggerHaptic() {
+            if (navigator.vibrate) navigator.vibrate(40);
+        }
+
+        // --- 1. State Management ---
         let tasks = [];
         let taskDecisions = {};
         let currentMood = '';
         let breathInterval;
 
-        // Haptic Feedback (สั่นเบาๆ)
-        function triggerHaptic() {
-            if(navigator.vibrate) navigator.vibrate(40);
-        }
-
-        // --- 2. ระบบ Dynamic Twilight Mode ---
+        // --- 2. Dynamic Twilight Mode ---
         let isDarkMode = false;
+        
         function initTheme() {
             const hour = new Date().getHours();
-            // เปิดโหมดกลางคืนอัตโนมัติหากเลย 18.00 หรือก่อน 06.00
             if (hour >= 18 || hour < 6) { 
-                document.body.classList.add('dark-theme');
-                isDarkMode = true;
+                setTheme(true);
+            } else {
+                setTheme(false);
             }
         }
-        function toggleDarkMode() {
-            triggerHaptic();
-            document.body.classList.toggle('dark-theme');
-            isDarkMode = !isDarkMode;
+
+        function setTheme(dark) {
+            isDarkMode = dark;
+            const themeBtn = document.getElementById('themeToggle');
+            if (isDarkMode) {
+                document.body.classList.add('dark-theme');
+                themeBtn.innerText = '☀️';
+            } else {
+                document.body.classList.remove('dark-theme');
+                themeBtn.innerText = '🌙';
+            }
         }
 
-        // --- 3. ระบบ Ambient Soundscape (Web Audio API) ---
+        function toggleDarkMode() {
+            triggerHaptic();
+            setTheme(!isDarkMode);
+        }
+
+        // --- 3. Ambient Soundscape (Web Audio API) ---
         let audioCtx;
         let noiseNode;
         let isPlayingNoise = false;
@@ -267,7 +327,6 @@
                 const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
                 const output = buffer.getChannelData(0);
                 
-                // สร้าง White Noise แบบสุ่ม
                 for (let i = 0; i < bufferSize; i++) {
                     output[i] = Math.random() * 2 - 1;
                 }
@@ -276,12 +335,10 @@
                 noiseNode.buffer = buffer;
                 noiseNode.loop = true;
                 
-                // ใช้ Lowpass Filter กรองเสียงแหลมออก ให้คล้ายเสียงลม/ฝนตกไกลๆ
                 const filter = audioCtx.createBiquadFilter();
                 filter.type = 'lowpass';
                 filter.frequency.value = 350; 
                 
-                // ลด Volume ลงไม่ให้รบกวนเกินไป
                 const gainNode = audioCtx.createGain();
                 gainNode.gain.value = 0.5;
 
@@ -289,25 +346,26 @@
                 filter.connect(gainNode);
                 gainNode.connect(audioCtx.destination);
                 noiseNode.start();
+                
                 isPlayingNoise = true;
-                btn.style.background = 'var(--card-bg)';
+                btn.classList.add('active');
                 btn.innerText = '🔊';
             } else {
                 if (isPlayingNoise) {
                     audioCtx.suspend();
                     isPlayingNoise = false;
-                    btn.style.background = 'var(--glass-bg)';
+                    btn.classList.remove('active');
                     btn.innerText = '🎧';
                 } else {
                     audioCtx.resume();
                     isPlayingNoise = true;
-                    btn.style.background = 'var(--card-bg)';
+                    btn.classList.add('active');
                     btn.innerText = '🔊';
                 }
             }
         }
 
-        // --- 4. Core Logic แอปพลิเคชัน ---
+        // --- 4. Application Logic ---
         function updateProgress(step) {
             document.getElementById('progressFill').style.width = `${(step / 5) * 100}%`;
         }
@@ -332,23 +390,27 @@
             const val = input.value.trim();
             if (val) {
                 triggerHaptic();
-                tasks.push(val);
+                tasks.push(val); // เก็บ Raw data ไว้จัดการทีหลัง
                 input.value = '';
                 renderBrainDump();
             }
         }
-        function handleEnter(e) { if(e.key === 'Enter') addTask(); }
+        
+        function handleEnter(e) { 
+            if(e.key === 'Enter') addTask(); 
+        }
 
         function renderBrainDump() {
             const list = document.getElementById('brainDumpList');
             list.innerHTML = '';
             tasks.forEach((task, index) => {
+                const safeTask = escapeHTML(task); // ใช้ escapeHTML ก่อนแสดงผลเสมอ
                 list.innerHTML += `
                 <div class="task-item">
                     <div class="task-content">
-                        <span style="word-break: break-word;">▪️ ${task}</span>
+                        <span class="task-text">▪️ ${safeTask}</span>
                         <div class="task-actions">
-                            <button class="icon-btn" onclick="deleteTask(${index})">🗑️</button>
+                            <button class="icon-btn" onclick="deleteTask(${index})" aria-label="ลบรายการ">🗑️</button>
                         </div>
                     </div>
                 </div>`;
@@ -367,10 +429,12 @@
             const list = document.getElementById('organizeList');
             list.innerHTML = '';
             taskDecisions = {};
+            
             tasks.forEach((task, index) => {
+                const safeTask = escapeHTML(task);
                 list.innerHTML += `
                     <div class="organize-card">
-                        <div class="organize-title">${task}</div>
+                        <div class="organize-title">${safeTask}</div>
                         <div class="tag-group">
                             <button class="tag-btn" onclick="setTag(${index}, 'tomorrow', this)"><span>🌱</span> ไว้พรุ่งนี้</button>
                             <button class="tag-btn" onclick="setTag(${index}, 'later', this)"><span>🕰️</span> วันหลังค่อยคิด</button>
@@ -387,10 +451,15 @@
             triggerHaptic();
             taskDecisions[taskIndex] = decision;
             const parent = btnElement.parentElement;
-            parent.querySelectorAll('.tag-btn').forEach(btn => btn.classList.remove('active-tomorrow', 'active-later', 'active-drop'));
+            
+            parent.querySelectorAll('.tag-btn').forEach(btn => {
+                btn.classList.remove('active-tomorrow', 'active-later', 'active-drop');
+            });
+
             if(decision === 'tomorrow') btnElement.classList.add('active-tomorrow');
             if(decision === 'later') btnElement.classList.add('active-later');
             if(decision === 'drop') btnElement.classList.add('active-drop');
+            
             checkOrganizeDone();
         }
 
@@ -398,7 +467,7 @@
             document.getElementById('btnNext3').disabled = Object.keys(taskDecisions).length !== tasks.length;
         }
 
-        // --- 5. Interactive Breathing Visualizer ---
+        // --- 5. Breathing Visualizer ---
         function selectRecharge(element, type) {
             triggerHaptic();
             document.querySelectorAll('.recharge-card').forEach(c => c.classList.remove('active'));
@@ -432,19 +501,18 @@
                     }, 7000);
                 }, 4000);
             };
-            cycle(); // Run immediately
+            cycle(); 
             breathInterval = setInterval(cycle, 19000); // 4+7+8 = 19s
         }
 
-        // --- 6. Summary, History & Clipboard ---
-        function saveMoodHistory() {
-            let hist = JSON.parse(localStorage.getItem('mindfulHistory') || '[]');
-            hist.push({ date: new Date().toLocaleDateString('th-TH'), mood: currentMood });
-            // เก็บเฉพาะ 7 ครั้งล่าสุด
-            if(hist.length > 7) hist.shift();
-            localStorage.setItem('mindfulHistory', JSON.stringify(hist));
-            
-            // สรุปสถิติ
+        // --- 6. Summary & Data Handling ---
+        function updateStatsDisplay(hist) {
+            const statsElement = document.getElementById('moodStats');
+            if(hist.length === 0) {
+                statsElement.innerHTML = '<strong>สถิติการเช็คอินช่วงนี้:</strong><br>ยังไม่มีข้อมูล';
+                return;
+            }
+
             const stats = {};
             hist.forEach(item => { stats[item.mood] = (stats[item.mood] || 0) + 1; });
             
@@ -452,7 +520,37 @@
             for(const [m, count] of Object.entries(stats)) {
                 statsHtml += `${m} ${count} ครั้ง &nbsp;&nbsp;`;
             }
-            document.getElementById('moodStats').innerHTML = statsHtml;
+            statsElement.innerHTML = statsHtml;
+        }
+
+        function saveMoodHistory() {
+            let hist = [];
+            try {
+                hist = JSON.parse(localStorage.getItem('mindfulHistory') || '[]');
+            } catch(e) {
+                console.error("Local storage read error", e);
+            }
+
+            hist.push({ date: new Date().toLocaleDateString('th-TH'), mood: currentMood });
+            
+            // Limit to last 7 entries
+            if(hist.length > 7) hist.shift();
+            
+            try {
+                localStorage.setItem('mindfulHistory', JSON.stringify(hist));
+            } catch(e) {
+                console.error("Local storage write error (Quota Exceeded?)", e);
+            }
+            
+            updateStatsDisplay(hist);
+        }
+
+        function resetStats() {
+            triggerHaptic();
+            if(confirm('ต้องการล้างประวัติอารมณ์ทั้งหมดใช่หรือไม่?')) {
+                localStorage.removeItem('mindfulHistory');
+                updateStatsDisplay([]);
+            }
         }
 
         function goToSummary() {
@@ -465,13 +563,15 @@
 
             tasks.forEach((task, index) => {
                 if(taskDecisions[index] === 'tomorrow') {
-                    tomorrowList.innerHTML += `<li>${task}</li>`;
+                    const li = document.createElement('li');
+                    li.textContent = task; // การใช้ textContent ป้องกัน XSS ได้อีกชั้น
+                    tomorrowList.appendChild(li);
                     hasTomorrow = true;
                 }
             });
 
             if(!hasTomorrow) {
-                tomorrowList.innerHTML = '<li style="list-style:none; color: var(--text-muted); text-align: center;">ไม่มีงานค้าง พักผ่อนให้เต็มที่ครับ 🌙</li>';
+                tomorrowList.innerHTML = '<li class="empty-state">ไม่มีงานค้าง พักผ่อนให้เต็มที่ครับ 🌙</li>';
             }
             nextStep(5);
         }
@@ -480,6 +580,7 @@
             triggerHaptic();
             let textToCopy = "📝 รายการที่ต้องทำพรุ่งนี้:\n";
             let count = 0;
+            
             tasks.forEach((task, index) => {
                 if(taskDecisions[index] === 'tomorrow') {
                     textToCopy += `- ${task}\n`;
@@ -500,30 +601,38 @@
 
         function closeApp() {
             triggerHaptic();
-            if(isPlayingNoise) toggleNoise(); // ปิดเสียงถ้าเปิดอยู่
-            const frame = document.querySelector('.device-frame');
+            if(isPlayingNoise) toggleNoise();
+            
+            const frame = document.getElementById('appFrame');
             frame.style.opacity = "0";
             frame.style.transform = "scale(0.95)";
             
             setTimeout(() => {
                 frame.innerHTML = `
-                    <div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; opacity:0; transition: opacity 1s ease;" id="goodbye">
-                        <div style="font-size:60px; margin-bottom:15px; filter: grayscale(20%);">🌙</div>
-                        <h2 style="color: var(--primary); font-size: 20px;">ราตรีสวัสดิ์ พักผ่อนนะครับ</h2>
-                        <p style="color: var(--text-muted); font-size: 14px; margin-top: 20px; cursor:pointer; text-decoration: underline;" onclick="location.reload()">เริ่มใหม่อีกครั้ง</p>
+                    <div class="goodbye-screen" id="goodbye">
+                        <div class="goodbye-icon">🌙</div>
+                        <h2 class="goodbye-title">ราตรีสวัสดิ์ พักผ่อนนะครับ</h2>
+                        <p class="goodbye-desc" onclick="location.reload()">เริ่มใหม่อีกครั้ง</p>
                     </div>
                 `;
+                // Remove visual frame properties
                 frame.style.background = "transparent";
                 frame.style.border = "none";
                 frame.style.boxShadow = "none";
+                frame.style.backdropFilter = "none";
+                frame.style.webkitBackdropFilter = "none";
+                
                 frame.style.opacity = "1";
                 frame.style.transform = "scale(1)";
                 
-                setTimeout(() => { document.getElementById('goodbye').style.opacity = "1"; }, 100);
+                setTimeout(() => { 
+                    const goodbyeElement = document.getElementById('goodbye');
+                    if(goodbyeElement) goodbyeElement.style.opacity = "1"; 
+                }, 100);
             }, 500);
         }
 
-        // Initialize App
+        // --- Initialize ---
         initTheme();
         updateProgress(1);
     </script>
