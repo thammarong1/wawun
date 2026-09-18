@@ -2,7 +2,8 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- รองรับ Viewport เต็มรูปแบบ ป้องกันการซูมมั่วบนมือถือ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>RESET - Mindful Horizon</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -43,54 +44,73 @@
             background: var(--bg-gradient); display: flex; justify-content: center; align-items: center;
             min-height: 100vh; color: var(--text-main); overscroll-behavior-y: none; 
             transition: background 1s cubic-bezier(0.4, 0, 0.2, 1); line-height: 1.6;
+            /* ป้องกันแถบสีขาวบน Mobile Safari/Chrome */
+            margin: 0;
         }
 
         :focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; border-radius: 8px;}
 
         /* Custom Scrollbar for UX */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(128, 128, 128, 0.3); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: rgba(128, 128, 128, 0.5); }
 
         /* ==============================
-           2. LAYOUT & FRAME
+           2. LAYOUT & RESPONSIVE FRAME
            ============================== */
         .device-frame {
-            width: 100%; height: 100vh; 
+            width: 100%; 
+            height: 100vh; 
+            height: 100dvh; /* Dynamic Viewport สำหรับมือถือ */
             background: var(--glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            position: relative; overflow: hidden; display: flex; flex-direction: column;
+            position: relative; display: flex; flex-direction: column;
             box-shadow: var(--glass-shadow); border: 1px solid var(--glass-border);
             transition: all 0.6s ease;
+            
+            /* Safe Area: หลบรอยบากหน้าจอและปุ่ม Home ของมือถือ */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
         }
 
+        /* สำหรับ Tablet และ Desktop */
         @media (min-width: 600px) {
-            .device-frame { max-width: 440px; height: 90vh; max-height: 850px; border-radius: 40px; }
+            .device-frame { 
+                max-width: 440px; 
+                height: 90vh; 
+                max-height: 850px; 
+                border-radius: 40px; 
+                /* เอา Safe Area ออกเมื่ออยู่บนจอใหญ่ */
+                padding: 0; 
+                overflow: hidden; /* เผื่อเนื้อหาทะลุกรอบขอบมน */
+            }
         }
 
         /* Controls */
-        .controls-top { position: absolute; top: 24px; width: 100%; display: flex; justify-content: space-between; padding: 0 10%; z-index: 100; }
+        .controls-top { position: absolute; top: max(24px, env(safe-area-inset-top)); width: 100%; display: flex; justify-content: space-between; padding: 0 10%; z-index: 100; left: 0;}
         .icon-toggle { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 50%; width: 44px; height: 44px; font-size: 20px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; color: var(--text-main); box-shadow: 0 4px 12px rgba(0,0,0,0.05);}
         .icon-toggle:hover { transform: translateY(-2px); }
         .icon-toggle:active { transform: scale(0.9); }
         .icon-toggle.active { background: var(--card-bg); color: var(--primary); box-shadow: 0 8px 16px rgba(90, 125, 143, 0.2);}
 
         /* Progress */
-        .progress-bar { position: absolute; top: 12%; left: 10%; right: 10%; height: 6px; background: rgba(128,128,128,0.15); border-radius: 6px; z-index: 10; overflow: hidden; }
+        .progress-bar { position: absolute; top: max(12%, 80px); left: 10%; right: 10%; height: 6px; background: rgba(128,128,128,0.15); border-radius: 6px; z-index: 10; overflow: hidden; }
         .progress-fill { height: 100%; width: 20%; background: var(--primary); border-radius: 6px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 0 10px rgba(90,125,143,0.4);}
 
         /* Screens */
-        .screen { position: absolute; top: 16%; left: 0; right: 0; bottom: 0; padding: 20px 10%; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(30px) scale(0.98); transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .screen { position: absolute; top: max(16%, 100px); left: 0; right: 0; bottom: max(20px, env(safe-area-inset-bottom)); padding: 20px 10%; display: flex; flex-direction: column; opacity: 0; pointer-events: none; transform: translateY(30px) scale(0.98); transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; overflow-x: hidden; }
         .screen.active { opacity: 1; pointer-events: all; transform: translateY(0) scale(1); }
 
         /* ==============================
            3. TYPOGRAPHY & COMPONENTS
            ============================== */
-        h1 { font-size: clamp(26px, 7vw, 32px); font-weight: 600; margin-bottom: 8px; color: var(--primary); letter-spacing: -0.5px;}
-        p.subtitle { font-size: clamp(15px, 4vw, 16px); color: var(--text-muted); margin-bottom: 32px; font-weight: 300;}
+        h1 { font-size: clamp(24px, 6vw, 32px); font-weight: 600; margin-bottom: 8px; color: var(--primary); letter-spacing: -0.5px; flex-shrink: 0;}
+        p.subtitle { font-size: clamp(14px, 3.5vw, 16px); color: var(--text-muted); margin-bottom: clamp(15px, 4vh, 32px); font-weight: 300; flex-shrink: 0;}
 
         /* Buttons */
-        .btn { background: var(--primary); color: white; border: none; padding: 18px; border-radius: 24px; font-size: 16px; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.3s ease; margin-top: auto; margin-bottom: 30px; box-shadow: 0 12px 24px rgba(90, 125, 143, 0.25); letter-spacing: 0.5px; flex-shrink: 0;}
+        .btn { background: var(--primary); color: white; border: none; padding: clamp(14px, 3vh, 18px); border-radius: 24px; font-size: 16px; font-weight: 500; cursor: pointer; width: 100%; transition: all 0.3s ease; margin-top: auto; box-shadow: 0 12px 24px rgba(90, 125, 143, 0.25); letter-spacing: 0.5px; flex-shrink: 0;}
         .btn:active { transform: scale(0.96); box-shadow: 0 6px 12px rgba(90, 125, 143, 0.15); }
         .btn:disabled { background: var(--glass-bg); color: var(--text-muted); box-shadow: none; cursor: not-allowed; border: 1px solid var(--glass-border); opacity: 0.7;}
         .btn:not(:disabled) { animation: softPulse 2.5s infinite; }
@@ -99,12 +119,12 @@
         .btn.btn-outline:hover { background: var(--glass-border); }
 
         /* Input Group */
-        .input-group { display: flex; gap: 12px; margin-bottom: 24px; align-items: flex-end;}
-        textarea { flex: 1; padding: 18px 20px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; font-size: 15px; color: var(--text-main); outline: none; transition: all 0.3s; resize: none; overflow-y: auto; min-height: 60px; max-height: 150px; line-height: 1.5; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);}
+        .input-group { display: flex; gap: 12px; margin-bottom: 20px; align-items: flex-end; flex-shrink: 0;}
+        textarea { flex: 1; padding: 15px 20px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; font-size: 15px; color: var(--text-main); outline: none; transition: all 0.3s; resize: none; overflow-y: auto; min-height: 55px; max-height: 120px; line-height: 1.5; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);}
         textarea:focus { background: var(--card-bg); box-shadow: 0 8px 24px rgba(0,0,0,0.08); border-color: var(--primary);}
         textarea::placeholder { color: var(--text-muted); opacity: 0.7;}
         
-        .btn-add { background: var(--primary); color: white; border: none; border-radius: 20px; width: 60px; height: 60px; font-size: 28px; cursor: pointer; transition: 0.3s; box-shadow: 0 8px 16px rgba(90, 125, 143, 0.2); display:flex; justify-content:center; align-items:center; flex-shrink: 0;}
+        .btn-add { background: var(--primary); color: white; border: none; border-radius: 20px; width: 55px; height: 55px; font-size: 28px; cursor: pointer; transition: 0.3s; box-shadow: 0 8px 16px rgba(90, 125, 143, 0.2); display:flex; justify-content:center; align-items:center; flex-shrink: 0;}
         .btn-add:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(90, 125, 143, 0.3);}
         .btn-add:active { transform: scale(0.9); }
         
@@ -112,8 +132,8 @@
         @keyframes shakeError { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
 
         /* Task Lists */
-        .task-list { flex: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 20px; scroll-behavior: smooth;}
-        .task-item, .organize-card { background: var(--glass-bg); padding: 18px 20px; border-radius: 20px; margin-bottom: 16px; font-size: 15px; border: 1px solid var(--glass-border); color: var(--text-main); transition: 0.3s; box-shadow: var(--glass-shadow); animation: slideUpFade 0.4s forwards;}
+        .task-list { flex: 1; overflow-y: auto; padding-right: 5px; margin-bottom: 20px; scroll-behavior: smooth; min-height: 100px;}
+        .task-item, .organize-card { background: var(--glass-bg); padding: 16px 20px; border-radius: 20px; margin-bottom: 12px; font-size: 15px; border: 1px solid var(--glass-border); color: var(--text-main); transition: 0.3s; box-shadow: var(--glass-shadow); animation: slideUpFade 0.4s forwards;}
         @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         .task-content { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
@@ -125,14 +145,14 @@
         .icon-btn:hover { filter: grayscale(0%); transform: scale(1.15) rotate(5deg); color: var(--danger); border-color: var(--danger);}
 
         /* Tags & Recharge Grids */
-        .mood-grid { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 40px; flex-wrap: wrap; }
-        .mood-btn { font-size: clamp(32px, 8vw, 44px); background: var(--glass-bg); border: 2px solid transparent; border-radius: 50%; width: clamp(65px, 16vw, 80px); height: clamp(65px, 16vw, 80px); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.4s ease; filter: grayscale(100%) opacity(0.4); box-shadow: var(--glass-shadow);}
+        .mood-grid { display: flex; justify-content: space-between; gap: 8px; margin-bottom: clamp(20px, 4vh, 40px); flex-wrap: wrap; flex-shrink: 0;}
+        .mood-btn { font-size: clamp(32px, 8vw, 44px); background: var(--glass-bg); border: 2px solid transparent; border-radius: 50%; width: clamp(60px, 15vw, 80px); height: clamp(60px, 15vw, 80px); display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.4s ease; filter: grayscale(100%) opacity(0.4); box-shadow: var(--glass-shadow);}
         .mood-btn.active { filter: grayscale(0%) opacity(1); transform: scale(1.15) translateY(-5px); background: var(--card-bg); border-color: var(--primary); box-shadow: 0 15px 25px rgba(90, 125, 143, 0.15); }
 
-        .organize-title { font-weight: 500; margin-bottom: 16px; text-align: center; color: var(--text-main); word-break: break-word;}
-        .tag-group { display: flex; gap: 10px; flex-wrap: wrap; }
-        .tag-btn, .recharge-btn { flex: 1; min-width: 85px; padding: 12px 4px; border: 2px solid transparent; background: rgba(128,128,128,0.08); border-radius: 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 6px; transition: 0.3s ease; }
-        .tag-btn span, .recharge-btn span { font-size: 22px; filter: grayscale(100%); transition: 0.3s; }
+        .organize-title { font-weight: 500; margin-bottom: 12px; text-align: center; color: var(--text-main); word-break: break-word;}
+        .tag-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag-btn, .recharge-btn { flex: 1; min-width: 85px; padding: 10px 4px; border: 2px solid transparent; background: rgba(128,128,128,0.08); border-radius: 16px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: 0.3s ease; }
+        .tag-btn span, .recharge-btn span { font-size: 20px; filter: grayscale(100%); transition: 0.3s; }
         .tag-btn:hover, .recharge-btn:hover { background: rgba(128,128,128,0.15); transform: translateY(-2px);}
         
         .tag-btn.active-tomorrow { background: var(--card-bg); color: var(--success); border-color: var(--success); box-shadow: 0 8px 16px rgba(107, 155, 130, 0.15); transform: translateY(-3px);}
@@ -140,21 +160,28 @@
         .tag-btn.active-drop { background: var(--card-bg); color: var(--danger); border-color: var(--danger); box-shadow: 0 8px 16px rgba(192, 123, 123, 0.15); transform: translateY(-3px);}
         .tag-btn[class*="active-"] span { filter: grayscale(0%) scale(1.2); }
 
-        .recharge-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px;}
+        .recharge-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; flex-shrink: 0;}
         .recharge-btn.active-recharge { background: var(--card-bg); color: var(--primary); border-color: var(--primary); box-shadow: 0 8px 16px rgba(90, 125, 143, 0.15); transform: translateY(-3px);}
         .recharge-btn.active-recharge span { filter: grayscale(0%) scale(1.2); }
 
         /* Breathing Zone */
-        .breathing-zone { display: none; text-align: center; padding: 10px; margin-top: 10px; opacity: 0; transition: opacity 0.5s ease;}
+        .breathing-zone { display: none; text-align: center; padding: 10px; opacity: 0; transition: opacity 0.5s ease; flex-shrink: 0;}
         .breathing-zone.active { display: block; opacity: 1; }
-        .breath-text { color: var(--success); font-weight: 500; font-size: 18px; margin: 0; animation: fadeText 3s infinite;}
+        
+        .circle-container { position: relative; width: clamp(100px, 15vh, 140px); height: clamp(100px, 15vh, 140px); margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; }
+        .breathing-circle { position: absolute; width: 50%; height: 50%; border-radius: 50%; background: radial-gradient(circle, var(--success) 0%, transparent 70%); opacity: 0.7; }
+        
+        .animate-breath { animation: breatheAnim 19s infinite linear; }
+        @keyframes breatheAnim { 0% { transform: scale(1); opacity: 0.5; } 21% { transform: scale(2.2); opacity: 1; } 58% { transform: scale(2.2); opacity: 1; } 100% { transform: scale(1); opacity: 0.5; } }
+        .countdown-number { position: relative; z-index: 2; font-size: clamp(28px, 4vh, 38px); font-weight: 600; color: var(--success); transition: transform 0.15s ease-out; }
+        .breath-text { color: var(--success); font-weight: 500; font-size: clamp(15px, 2.5vh, 18px); margin: 0; transition: opacity 0.3s; }
 
-        /* Summary Card */
-        .summary-card { background: var(--card-bg); border-radius: 28px; padding: 32px 24px; text-align: center; margin-bottom: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); border: 1px solid var(--glass-border);}
+        /* Summary & Ending */
+        .summary-card { background: var(--card-bg); border-radius: 28px; padding: clamp(20px, 4vh, 32px) 24px; text-align: center; margin-bottom: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); border: 1px solid var(--glass-border); flex-shrink: 0;}
         .summary-icon { font-size: 50px; margin-bottom: 12px; animation: float 6s ease-in-out infinite;}
         @keyframes float { 0%, 100% {transform: translateY(0);} 50% {transform: translateY(-10px);} }
         
-        .tomorrow-box { background: var(--glass-bg); padding: 20px; border-radius: 20px; text-align: left; margin-top: 24px; border: 1px solid var(--glass-border); box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);}
+        .tomorrow-box { background: var(--glass-bg); padding: 20px; border-radius: 20px; text-align: left; margin-top: clamp(15px, 3vh, 24px); border: 1px solid var(--glass-border); box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);}
         .tomorrow-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px;}
         .tomorrow-title { font-weight: 600; color: var(--success); font-size: 14px;}
         .tomorrow-list { padding-left: 20px; color: var(--text-main); font-size: 14px; margin: 0; }
@@ -163,14 +190,24 @@
 
         .btn-copy { background: var(--success); color: white; border: none; border-radius: 12px; padding: 6px 12px; font-size: 12px; font-weight: 500; cursor: pointer; transition: 0.2s; display: flex; gap: 6px; align-items: center;}
         
-        /* Goodbye Screen */
-        .goodbye-container { display:flex; height:100%; align-items:center; justify-content:center; flex-direction:column; gap:20px; text-align:center; }
+        .goodbye-container { display:flex; height:100%; align-items:center; justify-content:center; flex-direction:column; gap:20px; text-align:center; padding: 20px;}
         .goodbye-icon { font-size:70px; filter: grayscale(20%); animation: float 6s infinite; }
         .goodbye-title { color:var(--primary); font-size:24px; margin:0;}
 
         /* UX: Toast Notification */
-        .toast { position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%); background: var(--card-bg); color: var(--text-main); padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 500; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--glass-border); opacity: 0; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 1000; display: flex; align-items: center; gap: 8px;}
-        .toast.show { bottom: 40px; opacity: 1; }
+        .toast { position: fixed; bottom: -50px; left: 50%; transform: translateX(-50%); background: var(--card-bg); color: var(--text-main); padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 500; box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 1px solid var(--glass-border); opacity: 0; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); z-index: 1000; display: flex; align-items: center; gap: 8px; pointer-events: none;}
+        .toast.show { bottom: max(40px, env(safe-area-inset-bottom)); opacity: 1; }
+
+        /* ==============================
+           4. DYNAMIC RESPONSIVE TWEAKS 
+           (For Small Height Devices e.g., Landscape or iPhone SE)
+           ============================== */
+        @media (max-height: 700px) {
+            .controls-top { top: max(10px, env(safe-area-inset-top)); }
+            .screen { top: max(12%, 60px); }
+            .mood-grid { gap: 4px; }
+            .btn { margin-bottom: 10px; }
+        }
     </style>
 </head>
 <body>
@@ -228,13 +265,18 @@
             <div class="recharge-grid" id="rechargeOptions">
                 <button class="recharge-btn" onclick="selectRecharge(this, 'breath')"><span>🌬️</span> ฝึกหายใจ</button>
                 <button class="recharge-btn" onclick="selectRecharge(this, 'normal')"><span>🍵</span> ดื่มน้ำช้าๆ</button>
-                <button class="recharge-btn" onclick="selectRecharge(this, 'normal')"><span>🎵</span> ฟังเสียงธรรมชาติ</button>
-                <button class="recharge-btn" onclick="selectRecharge(this, 'normal')"><span>🧘</span> ยืดเหยียดร่างกาย</button>
+                <button class="recharge-btn" onclick="selectRecharge(this, 'normal')"><span>🎵</span> ฟังเสียง</button>
+                <button class="recharge-btn" onclick="selectRecharge(this, 'normal')"><span>🧘</span> ยืดเหยียด</button>
             </div>
 
             <div class="breathing-zone" id="breathingZone">
-                <h3 class="breath-text" id="breathText">หายใจเข้า...</h3>
+                <div class="circle-container">
+                    <div class="breathing-circle" id="breathCircle"></div>
+                    <div class="countdown-number" id="countdownNumber">4</div>
+                </div>
+                <h3 class="breath-text" id="breathText">หายใจเข้าลึกๆ...</h3>
             </div>
+
             <button class="btn" id="btnNext4" onclick="goToSummary()" disabled>พร้อมพักผ่อนแล้ว</button>
         </section>
 
@@ -243,7 +285,7 @@
             <div class="summary-card">
                 <div class="summary-icon">🕊️</div>
                 <h2 class="summary-title" style="color: var(--primary); margin-bottom: 8px;">เก่งมากครับ</h2>
-                <p style="color: var(--text-muted); font-size: 14px;">คุณอนุญาตให้ตัวเองปล่อยวางเรื่องหนักๆ ได้แล้ว</p>
+                <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 0;">คุณอนุญาตให้ตัวเองปล่อยวางเรื่องหนักๆ ได้แล้ว</p>
                 
                 <div class="tomorrow-box">
                     <div class="tomorrow-header">
@@ -264,7 +306,6 @@
         function escapeHTML(str) { return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag])); }
         function triggerHaptic() { if (navigator.vibrate) navigator.vibrate(40); }
         
-        // UX: Toast Notification Logic
         let toastTimeout;
         function showToast(message) {
             const toast = document.getElementById('toastBox');
@@ -334,8 +375,7 @@
            ============================== */
         function autoResize(textarea) { 
             textarea.style.height = 'auto'; 
-            // Cap height visually, enable scroll if exceeds 150px
-            textarea.style.height = (textarea.scrollHeight < 150 ? textarea.scrollHeight : 150) + 'px'; 
+            textarea.style.height = (textarea.scrollHeight < 120 ? textarea.scrollHeight : 120) + 'px'; 
         }
 
         function addTask() {
@@ -395,22 +435,29 @@
             document.getElementById('btnNext3').disabled = Object.keys(taskDecisions).length !== tasks.length;
         }
 
+        /* ==============================
+           BREATHING LOGIC & SYNC
+           ============================== */
         function selectRecharge(btn, type) {
             triggerHaptic();
-            // Dev Fix: Use CSS Classes instead of inline styles
             const container = document.getElementById('rechargeOptions');
             container.querySelectorAll('.recharge-btn').forEach(b => b.classList.remove('active-recharge'));
             btn.classList.add('active-recharge');
             
             const btnNext = document.getElementById('btnNext4');
             const zone = document.getElementById('breathingZone');
+            const circle = document.getElementById('breathCircle');
             
             if(type === 'breath') {
                 zone.classList.add('active');
+                circle.classList.remove('animate-breath');
+                void circle.offsetWidth; 
+                circle.classList.add('animate-breath');
                 startBreathingCycle();
                 btnNext.innerText = "หายใจเสร็จแล้ว / ไปต่อ";
             } else {
                 zone.classList.remove('active');
+                circle.classList.remove('animate-breath');
                 clearInterval(breathInterval);
                 btnNext.innerText = "พร้อมพักผ่อนแล้ว";
             }
@@ -420,17 +467,37 @@
         function startBreathingCycle() {
             clearInterval(breathInterval);
             const text = document.getElementById('breathText');
-            const cycle = () => {
-                text.innerText = "หายใจเข้าลึกๆ... (4)";
-                setTimeout(() => {
-                    text.innerText = "กลั้นไว้... (7)";
-                    setTimeout(() => { text.innerText = "ค่อยๆ หายใจออก... (8)"; }, 7000);
-                }, 4000);
+            const number = document.getElementById('countdownNumber');
+            
+            let phase = 0; 
+            let timeLeft = 4;
+
+            const updateTimer = () => {
+                number.innerText = timeLeft;
+                number.style.transform = 'scale(1.25)';
+                setTimeout(() => number.style.transform = 'scale(1)', 150);
+
+                if (phase === 0) text.innerText = "หายใจเข้าลึกๆ...";
+                else if (phase === 1) text.innerText = "กลั้นไว้...";
+                else if (phase === 2) text.innerText = "ค่อยๆ หายใจออก...";
+
+                timeLeft--;
+
+                if (timeLeft < 1) {
+                    phase = (phase + 1) % 3;
+                    if (phase === 0) timeLeft = 4;
+                    else if (phase === 1) timeLeft = 7;
+                    else if (phase === 2) timeLeft = 8;
+                }
             };
-            cycle(); 
-            breathInterval = setInterval(cycle, 19000);
+
+            updateTimer(); 
+            breathInterval = setInterval(updateTimer, 1000);
         }
 
+        /* ==============================
+           SUMMARY & ENDING
+           ============================== */
         function goToSummary() {
             const list = document.getElementById('tomorrowList'); list.innerHTML = ''; let has = false;
             tasks.forEach((task, i) => {
@@ -443,7 +510,6 @@
             nextStep(5);
         }
 
-        // UX Fix: Use Toast instead of alert for Clipboard
         function copyTomorrowTasks() {
             triggerHaptic();
             let textToCopy = "📝 รายการที่ต้องทำพรุ่งนี้:\n";
